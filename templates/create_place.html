@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Place</title>
+</head>
+<body>
+    <h1>Add Place</h1>
+
+    <form action="{{ url_for('create_place', place_id=place.id) }}" method="post" name="create_place_form">
+        <!-- Replace 'update_place' with the actual route for updating a place -->
+        <label for="name">Place Name:</label>
+        <input type="text" id="name" name="name" value="{{ place.name }}" required>
+        <br>
+        <label for="information">Information:</label>
+        <input type="text" id="information" name="information" value="{{ place.information }}" required>
+        <br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="{{ place.location }}" required>
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <form action="{{ url_for('list_places') }}" method="get">
+        <!-- Replace 'list_places' with the actual route for listing places -->
+        <input type="submit" value="Cancel">
+    </form>
+
+</body>
+</html>

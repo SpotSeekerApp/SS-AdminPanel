@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="container d-flex align-items-top mt-5 min-vh-100 justify-content-center">
+        <div class="row w-100 d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 mx-auto text-center">
+                <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>List Users</title>
+                    </head>
+
+                    <body>
+                        <h1>List of Users</h1>
+                    
+                        <a class="btn  btn-light float-right" role="button" aria-pressed="true" href="{{ url_for('create_users_page') }}">Add User</a>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Password</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>{{ user.id }}</td>
+                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.password }}</td>
+                                            <td>
+                                                <a class="btn  btn-primary" role="button" aria-pressed="true"
+                                                href="{{ url_for('edit_users_page', user_id=user.id) }}">Edit</a>
+                                                <a class="btn  btn-danger" role="button" aria-pressed="true"
+                                                href="{{ url_for('delete_users_page', user_id=user.id) }}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    
+                    </body>
+                </html>
+            </div>
+        </div>
+    </div>
+{% endblock %}

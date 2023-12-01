@@ -37,7 +37,7 @@ def register_page():
             st = f"SELECT * FROM users WHERE email='{email}'"
             cur.execute(st)
             fetchedUser = cur.fetchone()
-            st = f"SELECT * FROM admin WHERE email='{email}'"
+            st = f"SELECT * FROM admins WHERE email='{email}'"
             cur.execute(st)
             fetchedAdmin = cur.fetchone()
             if not ((fetchedAdmin is None) and (fetchedUser is None)):
@@ -85,7 +85,7 @@ def login_page():
             cur.execute(query) 
             fetchedUser = cur.fetchone()
 
-            query = f"SELECT email FROM admin WHERE email='{email}'"
+            query = f"SELECT email FROM admins WHERE email='{email}'"
             cur.execute(query) 
             fetchedAdmin = cur.fetchone() 
 
@@ -97,7 +97,7 @@ def login_page():
                 query = f"SELECT id, email, password, username FROM users WHERE email='{email}' and password='{password}'"
                 cur.execute(query) 
             else:
-                query = f"SELECT id, email, password, username FROM admin WHERE email='{email}' and password='{password}'"
+                query = f"SELECT id, email, password, username FROM admins WHERE email='{email}' and password='{password}'"
                 cur.execute(query) 
 
             fetched = cur.fetchone()
@@ -129,3 +129,43 @@ def login_page():
 
 def access_denied():
     return render_template("access-denied.html")
+
+
+def admin_page():
+    return render_template("admin.html")
+
+dummy_users = [
+    {"id": 1, "username": "user1", "email": "user1@example.com", "password": "password1"},
+    {"id": 2, "username": "user2", "email": "user2@example.com", "password": "password2"},
+    {"id": 3, "username": "user3", "email": "user3@example.com", "password": "password3"},
+]
+
+dummy_places = [
+    {"id": 1, "name": "place1", "info": "place info 1", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
+    {"id": 2, "name": "place2", "info": "place info 2", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
+    {"id": 3, "name": "place3", "info": "place info 3", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
+]
+
+def list_users_page():
+    return render_template("list_users.html", users=dummy_users)
+    
+def list_places_page():
+    return render_template("list_places.html", places = dummy_places)
+
+def create_users_page():
+    return render_template("create_user.html")
+
+def create_places_page():
+    return render_template("create_place.html")
+
+def edit_users_page():
+    return render_template("edit_users.html")
+
+def edit_places_page():
+    return render_template("edit_places.html")
+
+def delete_users_page():
+    return render_template("edit_users.html")
+
+def delete_places_page():
+    return render_template("edit_places.html")

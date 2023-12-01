@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding-top: 20px;
+            position: fixed;
+            height: 100%;
+        }
+
+        #content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        #logout {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+
+        a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h2>Admin Name</h2>
+        <a href="{{ url_for('list_users') }}">List Users</a>
+        <a href="{{ url_for('list_places') }}">List Places</a>
+    </div>
+
+    <div id="content">
+        <!-- Your main content goes here -->
+        <h1>Welcome to the Admin Panel</h1>
+        <!-- Add your content, such as the table for listing users/places -->
+    </div>
+
+    <div id="logout">
+        <a href="{{ url_for('logout') }}">Sign Out</a>
+    </div>
+
+</body>
+</html>

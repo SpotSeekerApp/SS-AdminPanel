@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <h1 class="title has-text-centered">Add a new user</h1>
+
+                <form method="POST" name="create_users_page">
+                    <div class="field">
+                        <label for="title" class="label">Name</label>
+                        <div class="control">
+                            <input type="text" name="user_name" class="input" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="title" class="label">Email</label>
+                        <div class="control">
+                            <input type="text" name="user_email" class="input" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="title" class="label">Password</label>
+                        <div class="control">
+                            <input type="text" name="user_password" class="input" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="control">
+                            <button class="button is-danger">Cancel</button>
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

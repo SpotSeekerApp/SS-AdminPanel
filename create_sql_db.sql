@@ -10,7 +10,7 @@ CREATE TABLE "users" (
   "password" varchar
 );
 
-CREATE TABLE "admin" (
+CREATE TABLE "admins" (
   "id" SERIAL PRIMARY KEY,
   "username" varchar,
   "name" varchar,
