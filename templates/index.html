@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <p class="text-danger text-center">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% if 'id' in session %}
+    <div class="row flex-row justify-content-between">
+        <div class="col col-5">
+            <div class="row flex-row justify-content-between">
+                <h1 class="main-header px-2">User List</h1>
+            </div>
+            <table class="table table-bordered rounded">
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                        <th scope="col" class="table-col">{{col}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+        <div class="col col-6">
+            <div class="row d-flex justify-content-center">
+                <h4 class="text-light "></h4>
+            </div>
+            <div class="row mx-2">
+                <!-- <div class="container-fluid"> -->
+                        <canvas id="attackChart" width=".02em" height=".02em"></canvas>
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h3 class="text-light">Please login</h3>
+    {% endif %}
+</div>
+
+{% endblock %}

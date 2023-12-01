@@ -1,0 +1,80 @@
+
+*{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+html, 
+body , .content-container{
+    height: 93%;
+}
+
+.content-container{
+    /* background-color: #031627 !important; */
+    background:
+	linear-gradient(
+		limegreen,
+		transparent
+	),
+	linear-gradient(
+		90deg,
+		skyblue,
+		transparent
+	),
+	linear-gradient(
+		-90deg,
+		coral,
+		transparent
+	);
+    background-blend-mode: screen;
+    border-radius: 1em;
+}
+
+
+.navbar{
+    background-color: coral;
+    border-radius: 1em;
+}
+
+.navbar-brand {
+    font-size: larger;
+}
+
+.nav-sub-text {
+    font-size: 1em !important;
+}
+
+
+.table-dark{
+    background-color: #031627 !important;
+}
+
+.table-col{
+    color: darkblue;
+}
+.footer {
+    position: relative;
+    margin-top: -150px; /* negative value of footer height */
+    height: 150px;
+    clear:both;
+    padding-top:20px;
+} 
+.content-container  {
+overflow:auto;
+padding-bottom:150px; /* this needs to be bigger than footer height*/
+}
+table {
+max-height: 350px;
+}
+
+.card{
+    background-color: white !important;
+    border-radius: 1em !important;
+}
+
+.card-title{
+    color: #031627 !important;
+}
+
+.register-form input{
+    font-size: 1em !important;
+}
+

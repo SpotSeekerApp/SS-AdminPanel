@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="container d-flex align-items-top mt-5 min-vh-100 justify-content-center">
+      <div class="row w-100 d-flex justify-content-center align-items-center h-100">
+        <div class="col-5">
+          <div class="card">
+            <article class="card-body p-4">
+              <h4 class="card-title text-center mb-4 mt-1">Create an account</h4>
+              <hr>
+              {% with messages = get_flashed_messages() %}
+              {% if messages %}
+
+              {% for message in messages %}
+              <p class="text-danger text-center">{{message}}</p>
+              {% endfor %}
+
+              {% endif %}
+              {% endwith %}
+              <form action="/register" method="post" class="register-form">
+
+                <div class="form-outline my-3">
+                  <input type="text" name="username" id="form3Example1cg" class="form-control form-control-lg"
+                    placeholder="Username" />
+                </div>
+
+                <div class="form-outline mb-3">
+                  <input type="email" name="email" id="form3Example3cg" class="form-control form-control-lg"
+                    placeholder="Your Email" />
+                </div>
+
+                <div class="form-outline mb-3">
+                  <input type="password" name="password" id="form3Example4cg" class="form-control form-control-lg"
+                    placeholder="Password" />
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="password" name="password_conf" id="form3Example4cdg" class="form-control form-control-lg"
+                    placeholder="Repeat your password" />
+                </div>
+
+                <div class="form-group d-flex dark-btn justify-content-center mt-4">
+                  <button type="submit" class="btn dark-btn btn-block"> Register </button>
+                </div> 
+                <p class="text-center text-muted mt-5 mb-0">Aldready have an account? <a href="/login"
+                    class="fw-bold text-body"><u>Login here</u></a></p>
+
+              </form><!-- form-group// -->
+
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
