@@ -4,37 +4,33 @@
     <div class="container mt-5">
         <div class="columns is-centered">
             <div class="column is-half">
-                <h1 class="title has-text-centered">Add a new user</h1>
+                <h1 class="title has-text-centered">Add New User</h1>
 
                 <form method="POST" name="create_users_page">
-                    <div class="field">
+                    <div class="mb-3 ">
                         <label for="title" class="label">Name</label>
-                        <div class="control">
-                            <input type="text" name="user_name" class="input" />
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Name" aria-label="Name example" name="user_name" required/>
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="mb-3 ">
                         <label for="title" class="label">Email</label>
-                        <div class="control">
-                            <input type="text" name="user_email" class="input" />
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Email" aria-label="Email example" name="email" required/>
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="mb-3 ">
                         <label for="title" class="label">Password</label>
-                        <div class="control">
-                            <input type="text" name="user_password" class="input" />
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Password" aria-label="Password example" name="password" required/>
                         </div>
                     </div>
 
-                    <div>
-                        <div class="control">
-                            <button class="button is-danger">Cancel</button>
-                        </div>
-                        <div class="control">
-                            <button class="button is-primary">Add</button>
-                        </div>
+                    <div class="mb-3 btn-group" role="group">
+                        <a class="btn  btn-danger" role="button" aria-pressed="true" href="{{ url_for('list_users_page') }}">Cancel</a>
+                        <a class="btn btn-success" role="button" aria-pressed="true" href="{{ url_for('list_users_page') }}">Add</a>
                     </div>
                 </form>
             </div>

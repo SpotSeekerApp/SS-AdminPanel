@@ -1,34 +1,48 @@
 {% extends "layout.html" %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Place</title>
-</head>
-<body>
-    <h1>Add Place</h1>
+{% block title %}Register{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <h1 class="title has-text-centered">Add New Spot</h1>
 
-    <form action="{{ url_for('create_place', place_id=place.id) }}" method="post" name="create_place_form">
-        <!-- Replace 'update_place' with the actual route for updating a place -->
-        <label for="name">Place Name:</label>
-        <input type="text" id="name" name="name" value="{{ place.name }}" required>
-        <br>
-        <label for="information">Information:</label>
-        <input type="text" id="information" name="information" value="{{ place.information }}" required>
-        <br>
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" value="{{ place.location }}" required>
-        <br>
+                <form method="POST" name="create_users_page">
+                    <div class="mb-3 ">
+                        <label for="title" class="label">Name</label>
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Name" aria-label="Name example" name="spot_name" required/>
+                        </div>
+                    </div>
 
-        <input type="submit" value="Submit">
-    </form>
+                    <div class="mb-3 ">
+                        <label for="title" class="label">Info</label>
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Info" aria-label="Info example" name="spot_info" required/>
+                        </div>
+                    </div>
 
-    <form action="{{ url_for('list_places') }}" method="get">
-        <!-- Replace 'list_places' with the actual route for listing places -->
-        <input type="submit" value="Cancel">
-    </form>
+                    
+                    <div class="mb-3 ">
+                        <label for="title" class="label">Tags</label>
+                        <div class="control col-sm-5">
+                            <input class="form-control input" type="text" placeholder="Tags" aria-label="Tags example" name="spot_tags" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="label">Image</label>
+                        <div class="control col-sm-5">
+                            <input type="file" class="form-control input" id="image" name="image" accept="image/*" required/>
+                            <small class="form-text text-muted">Upload an image file (jpg, jpeg, png, gif).</small>
+                        </div>
+                    </div>
 
-</body>
-</html>
+                    <div class="mb-3 btn-group" role="group">
+                        <a class="btn  btn-danger" role="button" aria-pressed="true" href="{{ url_for('list_places_page') }}">Cancel</a>
+                        <a class="btn btn-success" role="button" aria-pressed="true" href="{{ url_for('list_places_page') }}">Add</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

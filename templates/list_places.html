@@ -13,13 +13,13 @@
                     </head>
 
                     <body>
-                        <h1>List of Places</h1>
+                        <h1 class="float-left" >List of Places</h1>
                             
-                        <a class="btn  btn-light float-right" role="button" aria-pressed="true" href="{{ url_for('create_places_page') }}">Add Spot</a>
+                        <a class="btn  btn-light mb-3 float-right" role="button" aria-pressed="true" href="{{ url_for('create_places_page') }}">Add Spot</a>
                         
                         <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
+                            <table class="table table-bordered table-striped-columns">
+                                <thead class = "table-dark">
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
@@ -29,7 +29,7 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class = "table-light table table-striped">
                                     {% for place in places %}
                                         <tr>
                                             <td>{{ place.id }}</td>

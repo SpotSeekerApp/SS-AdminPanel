@@ -13,13 +13,13 @@
                     </head>
 
                     <body>
-                        <h1>List of Users</h1>
-                    
-                        <a class="btn  btn-light float-right" role="button" aria-pressed="true" href="{{ url_for('create_users_page') }}">Add User</a>
+
+                        <h1 class="float-left">List of Users</h1>
+                        <a class="btn  btn-light float-right mb-3" role="button" aria-pressed="true" href="{{ url_for('create_users_page') }}">Add User</a>
                         
                         <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
+                            <table class="table table-bordered table-striped-columns" >
+                                <thead class = "table-dark">
                                     <tr>
                                         <th>ID</th>
                                         <th>Username</th>
@@ -28,7 +28,7 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class = "table-light table table-striped">
                                     {% for user in users %}
                                         <tr>
                                             <td>{{ user.id }}</td>
