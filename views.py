@@ -67,7 +67,7 @@ def register_page():
         conn.commit()
         conn.close()
 
-def login_page():
+def login_admin_page():
     conn = dbapi.connect(config.DSN)
     try:
         cur = conn.cursor()
@@ -130,6 +130,8 @@ def login_page():
 def access_denied():
     return render_template("access-denied.html")
 
+def first_page():
+    return render_template("first.html")
 
 def admin_page():
     return render_template("admin.html")
