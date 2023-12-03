@@ -7,7 +7,7 @@ STATIC_FOLDER = 'static'
 TEMPLATES_FOLDER = 'templates'
 
 USERNAME = 'postgres'
-PASSWD = '12345'
+PASSWD = '123456'
 HOST = 'localhost'
 DB_PORT = '5432'
 DBNAME = 'spotseeker'
