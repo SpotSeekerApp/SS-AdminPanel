@@ -17,17 +17,16 @@ def logout_page():
     return redirect("/")
 
 def main_page():
-#    if session.get("loggedin") :
-#        return render_template("index.html", columns=["Username", "Link"])
-#    else: 
-        return redirect("/first")
+   return redirect("/index")
 
 
-app.add_url_rule("/", view_func=main_page, methods=["GET", "POST"])
+app.add_url_rule("/", view_func=views.main_page, methods=["GET", "POST"]) # main page 
+
 app.add_url_rule("/register", view_func=views.register_page, methods=["GET", "POST"])
-app.add_url_rule("/login_admin", view_func=views.login_admin_page, methods=["GET", "POST"])
+app.add_url_rule("/login-placeowner", view_func=views.login_placeowner_page, methods=["GET", "POST"])
+
 app.add_url_rule("/logout", view_func=logout_page)
-app.add_url_rule("/first", view_func=views.first_page)
+
 app.add_url_rule("/admin", view_func=views.admin_page)
 app.add_url_rule("/list-users", view_func=views.list_users_page, methods=["GET", "POST"])
 app.add_url_rule("/list-places", view_func=views.list_places_page, methods=["GET", "POST"])

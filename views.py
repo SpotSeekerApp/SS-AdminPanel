@@ -15,14 +15,11 @@ def register_page():
         conn = dbapi.connect(config.DSN)
         cur = conn.cursor()
         if request.method == "POST":
-            username = request.form["username"]
             email = request.form["email"]
             password = request.form["password"]
             password_conf = request.form["password_conf"]
 
-            if (
-                not username
-                or not email
+            if (not email
                 or not password
             ):
                 flash("Please fill in all necessary information")
@@ -34,26 +31,23 @@ def register_page():
                 flash("Password matching failed")
                 return render_template("register.html")
 
-            st = f"SELECT * FROM users WHERE email='{email}'"
+            st = f"SELECT * FROM placeowners WHERE email='{email}'"
             cur.execute(st)
             fetchedUser = cur.fetchone()
-            st = f"SELECT * FROM admins WHERE email='{email}'"
-            cur.execute(st)
-            fetchedAdmin = cur.fetchone()
-            if not ((fetchedAdmin is None) and (fetchedUser is None)):
+            if not ((fetchedUser is None)):
                 flash("There is already an existing account with this email")
                 return render_template("register.html")
 
             cur.execute(
-                "INSERT INTO users (username, email, \
+                "INSERT INTO placeowners (email, \
                             password)\
-                            VALUES (%s, %s, %s);",
-                (username, email, password),
+                            VALUES (%s, %s);",
+                (email, password),
             )
 
             flash("Successfully registered")
 
-            return redirect("/login")
+            return redirect("/login-placeowner")
         else:
             return render_template("register.html")
     except dbapi.errors.UniqueViolation:
@@ -67,71 +61,112 @@ def register_page():
         conn.commit()
         conn.close()
 
-def login_admin_page():
+def login_placeowner_page():
     conn = dbapi.connect(config.DSN)
     try:
         cur = conn.cursor()
         if request.method == "POST":
             if "id" in session.keys():
                 flash("You are already logged in")
-                return render_template("login.html")
+                return render_template("login_placeowner.html")
             
             email = request.form["email"]
             password = request.form["password"]
 
-            # conn.commit() 
-            query = f"SELECT email FROM users WHERE email='{email}'"
+            # check if user is a placeowner
+            query = f"SELECT email FROM placeowners WHERE email='{email}'"
             print(query)
             cur.execute(query) 
-            fetchedUser = cur.fetchone()
+            fetchedplaceowner = cur.fetchone() 
 
-            query = f"SELECT email FROM admins WHERE email='{email}'"
-            cur.execute(query) 
-            fetchedAdmin = cur.fetchone() 
-
-            if (fetchedAdmin is None) and (fetchedUser is None):
+            # if placeowner with corresponding email doesn't exist, render page warning message 
+            if (fetchedplaceowner is None):
                 flash("Invalid email")
-                return render_template("login.html")
+                return render_template("login_placeowner.html") 
             
-            if fetchedAdmin == None and fetchedUser != None:
-                query = f"SELECT id, email, password, username FROM users WHERE email='{email}' and password='{password}'"
-                cur.execute(query) 
-            else:
-                query = f"SELECT id, email, password, username FROM admins WHERE email='{email}' and password='{password}'"
-                cur.execute(query) 
+            # if placeowner found with corresponding email, fetch password of the placeowner from database     
+            query = f"SELECT id, email, password FROM placeowners WHERE email='{email}' and password='{password}'"
+            cur.execute(query) 
 
             fetched = cur.fetchone()
-            if fetched is not None:
-                id, email, password_t, username = fetched
-                print(query)
-                if password_t != password:
-                    flash("Invalid Password")
-                    return render_template("login.html")
 
-                session["loggedin"] = True
-                session["id"] = id
-                session["email"] = email
-                session["username"] = username
-                session["isadmin"] = False if fetchedAdmin == None else True
-            
+            # validate password by comparing fetched password information from database with input password 
+            id, email, password_t = fetched
+            if password_t != password: # if password is invalid, render page with warning message 
+                flash("Invalid Password")
+                return render_template("login_placeowner.html")
+
+            session["loggedin"] = True
+            session["id"] = id
+            session["email"] = email
+            session["isplaceowner"] = False if fetchedplaceowner == None else True
+        
             conn.commit()
             conn.close()
             return redirect("/")
         else:
-            return render_template("login.html")
+            return render_template("login_placeowner.html")
+        
     except dbapi.errors.UniqueViolation:
         flash("You are already logged in")
-        return render_template("login.html")
+        return render_template("login_placeowner.html")
     except os.error:
         flash("Something happened")
-        return render_template("login.html")
+        return render_template("login_placeowner.html")
+
+def main_page():
+    conn = dbapi.connect(config.DSN)
+    try:
+        cur = conn.cursor()
+        if request.method == "POST":
+            if "id" in session.keys():
+                flash("You are already logged in")
+                return render_template("index.html")
+            
+            email = request.form["email"]
+            password = request.form["password"]
+
+            # check if user is an Admin 
+            query = f"SELECT email FROM admins WHERE email='{email}'"
+            cur.execute(query) 
+            fetchedAdmin = cur.fetchone() 
+
+            # if admin with corresponding email doesn't exist, render page warning message 
+            if (fetchedAdmin is None):
+                flash("Invalid email")
+                return render_template("index.html") 
+            
+            # if admin found with corresponding email, fetch password of the admin from database     
+            query = f"SELECT id, email, password FROM admins WHERE email='{email}' and password='{password}'"
+            cur.execute(query) 
+
+            fetched = cur.fetchone()
+            # validate password by comparing fetched password information from database with input password 
+            id, email, password_t = fetched
+            if password_t != password: # if password is invalid, render page with warning message 
+                flash("Invalid Password")
+                return render_template("index.html")
+
+            session["loggedin"] = True
+            session["id"] = id
+            session["email"] = email
+            session["isadmin"] = False if fetchedAdmin == None else True
+        
+            conn.commit()
+            conn.close()
+            return redirect("/")
+        else:
+            return render_template("index.html")
+    except dbapi.errors.UniqueViolation:
+        flash("You are already logged in")
+        return render_template("index.html")
+    except os.error:
+        flash("Something happened")
+        return render_template("index.html")
     
 
 def access_denied():
     return render_template("access-denied.html")
-
-def first_page():
-    return render_template("first.html")
 
 def admin_page():
     return render_template("admin.html")

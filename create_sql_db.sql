@@ -2,7 +2,6 @@ CREATE DATABASE spotseeker;
 
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
-  "username" varchar,
   "name" varchar,
   "surname" varchar,
   "age" integer,
@@ -12,7 +11,6 @@ CREATE TABLE "users" (
 
 CREATE TABLE "admins" (
   "id" SERIAL PRIMARY KEY,
-  "username" varchar,
   "name" varchar,
   "surname" varchar,
   "age" integer,
@@ -20,12 +18,15 @@ CREATE TABLE "admins" (
   "password" varchar
 );
 
-CREATE TABLE "placeholder" (
+CREATE TABLE "placeowners" (
   "id" SERIAL PRIMARY KEY,
-  "username" varchar,
   "name" varchar,
   "surname" varchar,
   "age" integer,
   "email" varchar,
   "password" varchar
 );
+
+
+INSERT INTO admins(name, surname, age, email, password)
+VALUES ('betul', 'altundal', 21, 'zeynepbetulaltundal@gmail.com', '123456');
