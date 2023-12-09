@@ -4,6 +4,10 @@ from werkzeug.utils import redirect
 import os
 import pandas as pd 
 from datetime import datetime
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
 
 # custom modules
 import utils
@@ -137,7 +141,7 @@ def main_page():
                 return render_template("index.html") 
             
             # if admin found with corresponding email, fetch password of the admin from database     
-            query = f"SELECT id, email, password FROM admins WHERE email='{email}' and password='{password}'"
+            query = f"SELECT admin_id, adminname, email, password FROM admins WHERE email='{email}' and password='{password}'"
             cur.execute(query) 
 
             fetched = cur.fetchone()
@@ -184,9 +188,11 @@ dummy_places = [
 ]
 
 def list_users_page():
+    global dummy_users
     return render_template("list_users.html", users=dummy_users)
     
 def list_places_page():
+    global dummy_places
     return render_template("list_places.html", places = dummy_places)
 
 def create_users_page():
@@ -195,14 +201,36 @@ def create_users_page():
 def create_places_page():
     return render_template("create_place.html")
 
-def edit_users_page():
-    return render_template("edit_users.html")
+#def edit_users_page():
+#    return render_template("edit_user.html")
 
 def edit_places_page():
-    return render_template("edit_places.html")
+    return render_template("edit_place.html")
 
 def delete_users_page():
-    return render_template("edit_users.html")
+    return render_template("edit_user.html")
 
 def delete_places_page():
-    return render_template("edit_places.html")
+    return render_template("edit_place.html")
+
+class EditUserForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired()])
+    submit = SubmitField('Save Changes')
+
+
+#@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+def edit_users_page(user_id):
+
+    user = dummy_users
+    if request.method == "GET":
+        values = {"id":"", "username":"","email":"", "password":""}
+        return render_template('edit_user.html', user=values)
+    else:
+        id = request.form["id"]
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+        #update database
+        return redirect(url_for("list_users_page"))

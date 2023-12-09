@@ -5,6 +5,7 @@ from werkzeug.utils import redirect
 # custom modules
 import utils, views
 import config
+import requests
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
@@ -17,7 +18,14 @@ def logout_page():
     return redirect("/")
 
 def main_page():
-   return redirect("/index")
+   api_url = 'url'
+   response = requests.get(api_url)
+   
+   if response.status_code == 200:
+       data = response.json()
+       return redirect("/index", data=data)
+   else:
+       return f"Failed to fetch data from api. Status code: {response.status_code}"
 
 
 app.add_url_rule("/", view_func=views.main_page, methods=["GET", "POST"]) # main page 
@@ -32,7 +40,7 @@ app.add_url_rule("/list-users", view_func=views.list_users_page, methods=["GET",
 app.add_url_rule("/list-places", view_func=views.list_places_page, methods=["GET", "POST"])
 app.add_url_rule("/create-users", view_func=views.create_users_page, methods=["GET", "POST"])
 app.add_url_rule("/create-places", view_func=views.create_places_page, methods=["GET", "POST"])
-app.add_url_rule("/edit-users", view_func=views.edit_users_page, methods=["GET", "POST"])
+app.add_url_rule("/edit-users/<user_id>", view_func=views.edit_users_page, methods=["GET", "POST"])
 app.add_url_rule("/edit-places", view_func=views.edit_places_page, methods=["GET", "POST"])
 app.add_url_rule("/delete-users", view_func=views.delete_users_page, methods=["GET", "POST"])
 app.add_url_rule("/delete-places", view_func=views.delete_places_page, methods=["GET", "POST"])
