@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash
+from flask import Flask, render_template, request, session, flash, jsonify
 from datetime import datetime 
 import os
 from werkzeug.utils import redirect
@@ -10,6 +10,8 @@ import requests
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 app.config['SESSION_TYPE'] = 'filesystem'
+
+BASE_URL = "http://localhost:8080"
 
 def logout_page():
     if session is not None:
@@ -36,6 +38,7 @@ app.add_url_rule("/login-placeowner", view_func=views.login_placeowner_page, met
 app.add_url_rule("/logout", view_func=logout_page)
 
 app.add_url_rule("/admin", view_func=views.admin_page)
+app.add_url_rule("/place-owner", view_func=views.placeowner_page, methods=["GET", "POST"])
 app.add_url_rule("/list-users", view_func=views.list_users_page, methods=["GET", "POST"])
 app.add_url_rule("/list-places", view_func=views.list_places_page, methods=["GET", "POST"])
 app.add_url_rule("/create-users", view_func=views.create_users_page, methods=["GET", "POST"])
@@ -44,7 +47,12 @@ app.add_url_rule("/edit-users/<user_id>", view_func=views.edit_users_page, metho
 app.add_url_rule("/edit-places", view_func=views.edit_places_page, methods=["GET", "POST"])
 app.add_url_rule("/delete-users", view_func=views.delete_users_page, methods=["GET", "POST"])
 app.add_url_rule("/delete-places", view_func=views.delete_places_page, methods=["GET", "POST"])
+app.add_url_rule("/update-users", view_func=views.update_users_page, methods=["GET", "POST"])
+
+
 
 if __name__ == "__main__":
 
     app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
+
+

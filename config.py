@@ -13,6 +13,6 @@ DB_PORT = '5432'
 DBNAME = 'spotseeker'
 DSN = f"""user='{USERNAME}' password='{PASSWD}' host='{HOST}' port='{DB_PORT}' dbname='{DBNAME}'"""
 
-WEB_PORT = "8080"
+WEB_PORT = "8081"
 localhost_ip = "127.0.0.1"
 tmp_dir = "tmp"

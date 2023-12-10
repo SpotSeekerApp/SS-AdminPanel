@@ -1,4 +1,4 @@
-from flask import render_template, request, session, flash, send_file
+from flask import render_template, request, session, flash, send_file, jsonify
 import psycopg2 as dbapi
 from werkzeug.utils import redirect
 import os
@@ -7,7 +7,8 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
-
+import requests
+from http import HTTPStatus
 
 # custom modules
 import utils
@@ -175,10 +176,12 @@ def access_denied():
 def admin_page():
     return render_template("admin.html")
 
+
+
 dummy_users = [
-    {"id": 1, "username": "user1", "email": "user1@example.com", "password": "password1"},
-    {"id": 2, "username": "user2", "email": "user2@example.com", "password": "password2"},
-    {"id": 3, "username": "user3", "email": "user3@example.com", "password": "password3"},
+    {"id": 1, "username": "user1", "email": "user1@example.com"},
+    {"id": 2, "username": "user2", "email": "user2@example.com"},
+    {"id": 3, "username": "user3", "email": "user3@example.com"},
 ]
 
 dummy_places = [
@@ -187,19 +190,88 @@ dummy_places = [
     {"id": 3, "name": "place3", "info": "place info 3", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
 ]
 
+def placeowner_page():
+    global dummy_places
+    return render_template("placeowner.html", places=dummy_places)
+
 def list_users_page():
-    global dummy_users
-    return render_template("list_users.html", users=dummy_users)
+    response = requests.get('http://localhost:8080/GetAllUsers')
+    user_dict = response.json()['Data']
+    status = response.json()['StatusCode']
+    print(user_dict.values())
+
+    return render_template("list_users.html", users=user_dict.values())
     
 def list_places_page():
     global dummy_places
     return render_template("list_places.html", places = dummy_places)
 
-def create_users_page():
-    return render_template("create_user.html")
+api_url = "http://localhost:8080"
 
-def create_places_page():
-    return render_template("create_place.html")
+def get_users():
+    response = requests.get('http://localhost:8080/GetAllUsers')
+    #print(response)
+
+def create_users_page(): #TODO: decide on columns
+
+    user_data =  {
+        "user_name" : request.form['username'],
+        "email": request.form['email'],
+    }
+    
+    response = requests.post('http://localhost:8080/AddUser', json=user_data) #TODO: add url
+    status = response.json()['StatusCode']
+
+    if status == HTTPStatus.OK:
+        flash("User added successfully", "success")
+        return render_template("list_users.html")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        return jsonify({"error": "Same email"}), HTTPStatus.NOT_ACCEPTABLE
+    else:
+        return jsonify({"error": "Failed to add user"}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+def update_users_page(): #TODO: decide on columns
+    #print(user_id)
+    user_id = request.form.get('user_id')
+    print(user_id)
+    user_data =  {
+        "user_id" : user_id,
+        #"user_name" : "deneme",
+        "user_name" : request.form['user_name'],
+        "email": request.form['email'],
+    }
+    
+    response = requests.post('http://localhost:8080/UpdateUser', json=user_data) #TODO: add url
+    status = response.json()['StatusCode']
+
+    if status == HTTPStatus.OK:
+        flash("User added successfully", "success")
+        return render_template("list_users.html")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        return jsonify({"error": "Same email"}), HTTPStatus.NOT_ACCEPTABLE
+    else:
+        return jsonify({"error": "Failed to add user"}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+def create_places_page():  #TODO: decide on columns
+    
+    place_data = [
+        {
+        "place_name": request.form['place_name'],
+        "location": request.form['location'],
+        "photo_link": request.form['link'],
+        "phone_number": request.form['phone_number']
+        }
+    ]
+
+    response = requests.post(api_url, json=place_data) #TODO: add url
+
+    if response.status_code == HTTPStatus.OK:
+        flash("User added successfully", "success")
+    else:
+        return jsonify({"error": "Failed to add place"}), HTTPStatus.INTERNAL_SERVER_ERROR
+    
 
 #def edit_users_page():
 #    return render_template("edit_user.html")
@@ -220,7 +292,6 @@ class EditUserForm(FlaskForm):
     submit = SubmitField('Save Changes')
 
 
-#@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 def edit_users_page(user_id):
 
     user = dummy_users
@@ -233,4 +304,22 @@ def edit_users_page(user_id):
         email = request.form["email"]
         password = request.form["password"]
         #update database
-        return redirect(url_for("list_users_page"))
+        return redirect("list_users.html")
+    
+def create_placeowner_places(): #TODO: decide on columns
+
+    places_data = [
+        {
+        "place_name": request.form['place_name'],
+        "location": request.form['location'],
+        "photo_link": request.form['link'],
+        "phone_number": request.form['phone_number']
+        },
+    ]
+
+    response = requests.post(api_url, json=places_data) #TODO: add url
+
+    if response.status_code == 200:
+        flash("Place added successfully", "success")
+    else:
+        return jsonify({"error": "Failed to add place"}), 500
