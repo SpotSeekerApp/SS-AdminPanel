@@ -221,38 +221,45 @@ def create_users_page(): #TODO: decide on columns
     
     response = requests.post('http://localhost:8080/AddUser', json=user_data) #TODO: add url
     status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllUsers')
+    user_dict = response.json()['Data']
+    users_list_status = response.json()['StatusCode']
 
     if status == HTTPStatus.OK:
         flash("User added successfully", "success")
-        return render_template("list_users.html")
     elif status == HTTPStatus.NOT_ACCEPTABLE:
-        return jsonify({"error": "Same email"}), HTTPStatus.NOT_ACCEPTABLE
+        flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
     else:
-        return jsonify({"error": "Failed to add user"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        flash("Error! Failed to add user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
 
+    return render_template("list_users.html", users=user_dict.values())
 
 def update_users_page(): #TODO: decide on columns
     #print(user_id)
-    user_id = request.form.get('user_id')
-    print(user_id)
+    # user_id = request.form.get('user_id')
+    user_id = request.form['user_id']
+    print(request.form) 
     user_data =  {
         "user_id" : user_id,
-        #"user_name" : "deneme",
         "user_name" : request.form['user_name'],
         "email": request.form['email'],
     }
     
     response = requests.post('http://localhost:8080/UpdateUser', json=user_data) #TODO: add url
     status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllUsers')
+    user_dict = response.json()['Data']
+    users_list_status = response.json()['StatusCode']
 
     if status == HTTPStatus.OK:
         flash("User added successfully", "success")
-        return render_template("list_users.html")
     elif status == HTTPStatus.NOT_ACCEPTABLE:
-        return jsonify({"error": "Same email"}), HTTPStatus.NOT_ACCEPTABLE
+        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
     else:
-        return jsonify({"error": "Failed to add user"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        print(user_data)
+        flash({"error": "Failed to add user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
+    return render_template("list_users.html", users=user_dict.values())
 
 def create_places_page():  #TODO: decide on columns
     
