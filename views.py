@@ -232,7 +232,7 @@ def create_users_page(): #TODO: decide on columns
     else:
         flash("Error! Failed to add user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
 
-    return render_template("list_users.html", users=user_dict.values())
+    return redirect(url_for("list_users_page"))
 
 def update_users_page(): #TODO: decide on columns
     #print(user_id)
