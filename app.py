@@ -38,16 +38,17 @@ app.add_url_rule("/login-placeowner", view_func=views.login_placeowner_page, met
 app.add_url_rule("/logout", view_func=logout_page)
 
 app.add_url_rule("/admin", view_func=views.admin_page)
-app.add_url_rule("/place-owner", view_func=views.placeowner_page, methods=["GET", "POST"])
+app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=views.placeowner_page, methods=["GET", "POST"])
 app.add_url_rule("/list-users", view_func=views.list_users_page, methods=["GET"])
 app.add_url_rule("/list-places", view_func=views.list_places_page, methods=["GET", "POST"])
 app.add_url_rule("/create-users", view_func=views.create_users_page, methods=["POST"])
 app.add_url_rule("/create-places", view_func=views.create_places_page, methods=["GET", "POST"])
 app.add_url_rule("/edit-users/<user_id>", view_func=views.edit_users_page, methods=["GET", "POST"])
-app.add_url_rule("/edit-places", view_func=views.edit_places_page, methods=["GET", "POST"])
-app.add_url_rule("/delete-users", view_func=views.delete_users_page, methods=["GET", "POST"])
+# app.add_url_rule("/edit-places", view_func=views.edit_places_page, methods=["GET", "POST"])
+app.add_url_rule("/delete-users/<int:user_id>", view_func=views.delete_users_page, methods=["GET", "POST"])
 app.add_url_rule("/delete-places", view_func=views.delete_places_page, methods=["GET", "POST"])
 app.add_url_rule("/update-users", view_func=views.update_users_page, methods=["GET", "POST"])
+app.add_url_rule("/update-places", view_func=views.update_places_page, methods=["GET", "POST"])
 
 
 

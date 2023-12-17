@@ -14,169 +14,6 @@ from http import HTTPStatus
 import utils
 import config
 
-def register_page():
-    conn = None
-    try:
-        conn = dbapi.connect(config.DSN)
-        cur = conn.cursor()
-        if request.method == "POST":
-            email = request.form["email"]
-            password = request.form["password"]
-            password_conf = request.form["password_conf"]
-
-            if (not email
-                or not password
-            ):
-                flash("Please fill in all necessary information")
-                return render_template("register.html")
-            if len(password) < 6:
-                flash("Password length should be at least 6")
-                return render_template("register.html")
-            if password != password_conf:
-                flash("Password matching failed")
-                return render_template("register.html")
-
-            st = f"SELECT * FROM placeowners WHERE email='{email}'"
-            cur.execute(st)
-            fetchedUser = cur.fetchone()
-            if not ((fetchedUser is None)):
-                flash("There is already an existing account with this email")
-                return render_template("register.html")
-
-            cur.execute(
-                "INSERT INTO placeowners (email, \
-                            password)\
-                            VALUES (%s, %s);",
-                (email, password),
-            )
-
-            flash("Successfully registered")
-
-            return redirect("/login-placeowner")
-        else:
-            return render_template("register.html")
-    except dbapi.errors.UniqueViolation:
-        flash("You are already registered.")
-        return render_template("register.html")
-    except os.error:
-        utils.err_handler(os.error)
-        return "Something happened"
-    finally:
-        cur.close()
-        conn.commit()
-        conn.close()
-
-def login_placeowner_page():
-    conn = dbapi.connect(config.DSN)
-    try:
-        cur = conn.cursor()
-        if request.method == "POST":
-            if "id" in session.keys():
-                flash("You are already logged in")
-                return render_template("login_placeowner.html")
-            
-            email = request.form["email"]
-            password = request.form["password"]
-
-            # check if user is a placeowner
-            query = f"SELECT email FROM placeowners WHERE email='{email}'"
-            print(query)
-            cur.execute(query) 
-            fetchedplaceowner = cur.fetchone() 
-
-            # if placeowner with corresponding email doesn't exist, render page warning message 
-            if (fetchedplaceowner is None):
-                flash("Invalid email")
-                return render_template("login_placeowner.html") 
-            
-            # if placeowner found with corresponding email, fetch password of the placeowner from database     
-            query = f"SELECT id, email, password FROM placeowners WHERE email='{email}' and password='{password}'"
-            cur.execute(query) 
-
-            fetched = cur.fetchone()
-
-            # validate password by comparing fetched password information from database with input password 
-            id, email, password_t = fetched
-            if password_t != password: # if password is invalid, render page with warning message 
-                flash("Invalid Password")
-                return render_template("login_placeowner.html")
-
-            session["loggedin"] = True
-            session["id"] = id
-            session["email"] = email
-            session["isplaceowner"] = False if fetchedplaceowner == None else True
-        
-            conn.commit()
-            conn.close()
-            return redirect("/")
-        else:
-            return render_template("login_placeowner.html")
-        
-    except dbapi.errors.UniqueViolation:
-        flash("You are already logged in")
-        return render_template("login_placeowner.html")
-    except os.error:
-        flash("Something happened")
-        return render_template("login_placeowner.html")
-
-def main_page():
-    conn = dbapi.connect(config.DSN)
-    try:
-        cur = conn.cursor()
-        if request.method == "POST":
-            if "id" in session.keys():
-                flash("You are already logged in")
-                return render_template("index.html")
-            
-            email = request.form["email"]
-            password = request.form["password"]
-
-            # check if user is an Admin 
-            query = f"SELECT email FROM admins WHERE email='{email}'"
-            cur.execute(query) 
-            fetchedAdmin = cur.fetchone() 
-
-            # if admin with corresponding email doesn't exist, render page warning message 
-            if (fetchedAdmin is None):
-                flash("Invalid email")
-                return render_template("index.html") 
-            
-            # if admin found with corresponding email, fetch password of the admin from database     
-            query = f"SELECT admin_id, adminname, email, password FROM admins WHERE email='{email}' and password='{password}'"
-            cur.execute(query) 
-
-            fetched = cur.fetchone()
-            # validate password by comparing fetched password information from database with input password 
-            id, email, password_t = fetched
-            if password_t != password: # if password is invalid, render page with warning message 
-                flash("Invalid Password")
-                return render_template("index.html")
-
-            session["loggedin"] = True
-            session["id"] = id
-            session["email"] = email
-            session["isadmin"] = False if fetchedAdmin == None else True
-        
-            conn.commit()
-            conn.close()
-            return redirect("/")
-        else:
-            return render_template("index.html")
-    except dbapi.errors.UniqueViolation:
-        flash("You are already logged in")
-        return render_template("index.html")
-    except os.error:
-        flash("Something happened")
-        return render_template("index.html")
-    
-
-def access_denied():
-    return render_template("access-denied.html")
-
-def admin_page():
-    return render_template("admin.html")
-
-
 
 dummy_users = [
     {"id": 1, "username": "user1", "email": "user1@example.com"},
@@ -190,9 +27,77 @@ dummy_places = [
     {"id": 3, "name": "place3", "info": "place info 3", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
 ]
 
-def placeowner_page():
-    global dummy_places
-    return render_template("placeowner.html", places=dummy_places)
+
+def main_page():
+    admin_id = request.form['admin_id']
+   
+    response = requests.get(f'http://localhost:8080/ReturnPassword?username={admin_id}') #TODO: add url
+    status = response.json()['StatusCode']
+    encryped_password = response.json()['password']
+
+    if utils.check_password(encryped_password, request.form['password']):
+        session["loggedin"] = True
+        session["id"] = admin_id
+        session["isadmin"] = True
+        return render_template("admin.html")
+    else:
+        flash("Invalid Password")
+        return render_template("index.html")
+    
+
+
+def register_page():
+    
+    placeowner_data =  {
+        "placeowner_name" : request.form['placeowner_name'],
+        "password": request.form['password'],
+    }
+    
+    response = requests.post('http://localhost:8080/AddPlaceowner', json=placeowner_data) #TODO: add url
+    status = response.json()['StatusCode']
+
+    if status == HTTPStatus.OK:
+        flash("Placeowner added successfully", "success")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
+    else:
+        flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    return render_template("login_placeowner.html")
+
+
+def login_placeowner_page():
+    placeowner_id = request.form['placeowner_id']
+   
+    response = requests.get(f'http://localhost:8080/ReturnPassword?username={placeowner_id}') #TODO: add url
+    status = response.json()['StatusCode']
+    encryped_password = response.json()['password']
+
+    if utils.check_password(encryped_password, request.form['password']):
+        session["loggedin"] = True
+        session["id"] = placeowner_id
+        session["isplaceowner"] = True
+        return render_template("placeowner.html")
+    else:
+        flash("Invalid Password")
+        return render_template("login_placeowner.html")
+        
+
+def access_denied():
+    return render_template("access-denied.html")
+
+def admin_page():
+    return render_template("admin.html")
+
+
+def placeowner_page(place_owner_id):
+    #global dummy_places
+    response = requests.get(f'http://localhost:8080/GetAllPlaces?place_owner_id={place_owner_id}')
+    place_dict = response.json()['Data']
+    status = response.json()['StatusCode']
+    print(place_dict.values())
+
+    return render_template("placeowner.html", places=place_dict.values())
 
 def list_users_page():
     response = requests.get('http://localhost:8080/GetAllUsers')
@@ -201,16 +106,16 @@ def list_users_page():
     print(user_dict.values())
 
     return render_template("list_users.html", users=user_dict.values())
-    
+
+
 def list_places_page():
-    global dummy_places
-    return render_template("list_places.html", places = dummy_places)
+    response = requests.get('http://localhost:8080/GetAllPlaces')
+    place_dict = response.json()['Data']
+    status = response.json()['StatusCode']
+    print(place_dict.values())
 
-api_url = "http://localhost:8080"
+    return render_template("list_places.html", places=place_dict.values())
 
-def get_users():
-    response = requests.get('http://localhost:8080/GetAllUsers')
-    #print(response)
 
 def create_users_page(): #TODO: decide on columns
 
@@ -265,38 +170,102 @@ def create_places_page():  #TODO: decide on columns
     
     place_data = [
         {
-        "place_name": request.form['place_name'],
-        "location": request.form['location'],
-        "photo_link": request.form['link'],
-        "phone_number": request.form['phone_number']
+        "place_name": request.form['name'],
+        "main_category": request.form['main_category'],
+        "tags": request.form['tags'],
+        "link": request.form['link']
         }
     ]
 
-    response = requests.post(api_url, json=place_data) #TODO: add url
+    response = requests.post('http://localhost:8080/AddPlace', json=place_data) #TODO: add url
+    status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllPlaces')
+    places_dict = response.json()['Data']
+    places_list_status = response.json()['StatusCode']
 
-    if response.status_code == HTTPStatus.OK:
+    if status == HTTPStatus.OK:
         flash("User added successfully", "success")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
     else:
-        return jsonify({"error": "Failed to add place"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        flash("Error! Failed to add user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    return redirect(url_for("list_users_page"))
+
+
+def update_places_page():
+    place_data = [
+        {
+        "place_name": request.form['name'],
+        "main_category": request.form['main_category'],
+        "tags": request.form['tags'],
+        "link": request.form['link']
+        }
+    ]
+    print(place_data)
     
+    response = requests.post('http://localhost:8080/UpdatePlace', json=place_data) #TODO: add url
+    status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllPlaces')
+    if status == HTTPStatus.OK:
+        flash("Place edited successfully", "success")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+    else:
+        flash({"error": "Failed to edit place"}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
-#def edit_users_page():
-#    return render_template("edit_user.html")
+    return redirect(url_for("list_places_page"))
 
-def edit_places_page():
-    return render_template("edit_place.html")
 
-def delete_users_page():
-    return render_template("edit_user.html")
+def delete_users_page(user_id):
+    user_data =  {
+        "user_id" : user_id,
+    }
+
+    print(user_data)
+
+    response = requests.post('http://localhost:8080/RemoveUser', json=user_data) #TODO: add url
+    status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllUsers')
+    user_dict = response.json()['Data']
+    users_list_status = response.json()['StatusCode']
+    if status == HTTPStatus.OK:
+        flash("User deleted successfully", "success")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+    else:
+        flash({"error": "Failed to remove user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    #return render_template("list_users.html", users=user_dict.values())
+    return redirect(url_for("list_users_page"))
+
 
 def delete_places_page():
-    return render_template("edit_place.html")
+    place_data = [
+        {
+        "place_name": request.form['name'],
+        "main_category": request.form['main_category'],
+        "tags": request.form['tags'],
+        "link": request.form['link']
+        }
+    ]
 
-class EditUserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired()])
-    password = StringField('Password', validators=[DataRequired()])
-    submit = SubmitField('Save Changes')
+    response = requests.post('http://localhost:8080/RemovePlace', json=place_data) #TODO: add url
+    status = response.json()['StatusCode']
+    response = requests.get('http://localhost:8080/GetAllPlaces')
+    if status == HTTPStatus.OK:
+        flash("Place deleted successfully", "success")
+    elif status == HTTPStatus.NOT_ACCEPTABLE:
+        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+    else:
+        flash({"error": "Failed to remove place"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+    return redirect(url_for("list_places_page"))
+
+
+
+
+
 
 
 def edit_users_page(user_id):
@@ -313,6 +282,7 @@ def edit_users_page(user_id):
         #update database
         return redirect("list_users.html")
     
+
 def create_placeowner_places(): #TODO: decide on columns
 
     places_data = [

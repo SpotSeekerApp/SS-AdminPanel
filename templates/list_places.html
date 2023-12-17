@@ -27,9 +27,9 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Info</th>
+                                        <th>Main Category</th>
                                         <th>Tags</th>
-                                        <th>Reviews</th>
+                                        <th>Link</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -38,9 +38,9 @@
                                         <tr>
                                             <td>{{ place.id }}</td>
                                             <td>{{ place.name }}</td>
-                                            <td>{{ place.info }}</td>
+                                            <td>{{ place.main_category }}</td>
                                             <td>{{ place.tags }}</td>
-                                            <td>{{ place.reviews }}</td>
+                                            <td>{{ place.link }}</td>
                                             <td>
                                                 <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#modaledit">Edit</a>
                                                 <a class="btn  btn-danger" role="button" aria-pressed="true"
@@ -65,16 +65,16 @@
                         <input type = "text" class="form-control" name="name"  value="name">
                     </div>
                     <div class="form-group">
-                        <label>Info:</label>
-                        <input type = "text" class="form-control" name="info" value="info">
+                        <label>Main Category:</label>
+                        <input type = "text" class="form-control" name="main_category" value="info">
                     </div>
                     <div class="form-group">
                         <label>Tags:</label>
-                        <input type = "text" class="form-control" name="tags" value="tags">
+                        <input type = "text" class="form-control" name="tags" value="tags" readonly>
                     </div>
                     <div class="form-group">
-                        <label>Reviews:</label>
-                        <input type = "text" class="form-control" name="reviews" value="reviews">
+                        <label>Link:</label>
+                        <input type = "text" class="form-control" name="link" value="reviews">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">Save Changes</button>
@@ -103,16 +103,17 @@
                         <input type = "text" class="form-control" name="name" required="1">
                     </div>
                     <div class="form-group">
-                        <label>Info:</label>
-                        <input type = "text" class="form-control" name="info" required="1">
+                        <label>Main Category:</label>
+                        <input type = "text" class="form-control" name="main_category" required="1">
                     </div>
                     <div class="form-group">
+                        <!-- TODO 0 1 arasında sayı al her bir tag için -->
                         <label>Tags:</label>
                         <input type = "text" class="form-control" name="tags" required="1">
                     </div>
                     <div class="form-group">
-                        <label>Reviews:</label>
-                        <input type = "text" class="form-control" name="reviews" required="1">
+                        <label>Link:</label>
+                        <input type = "text" class="form-control" name="link" required="1">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">Add Place</button>

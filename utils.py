@@ -8,6 +8,10 @@ from datetime import datetime
 # custom modules
 import config
 
+
+def check_password(encryped_password, plain_input_password):
+    pass
+
 def err_handler(err):
     print ("Exception has occured:", err)
     print ("Exception type:", type(err))

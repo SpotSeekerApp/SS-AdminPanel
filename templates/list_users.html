@@ -49,7 +49,7 @@
                                             <td>
                                                 <a href="/update-users/{{user.user_id}}" class="btn btn-primary" role="button" data-toggle="modal" data-target="#modaledit{{user.user_id}}">Edit</a>
                                                 <a class="btn  btn-danger" role="button" 
-                                                href="{{ url_for('delete_users_page', user_id=user.id) }}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                                href="{{ url_for('delete_users_page', user_id=user.user_id) }}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                                             </td>
  <!--Edit user modal-->
 <div id="modaledit{{user.user_id}}" class="modal fade" role="dialog">

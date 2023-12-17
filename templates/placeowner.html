@@ -9,7 +9,7 @@
                         <meta charset="UTF-8">
                         <meta http-equiv="X-UA-Compatible" content="IE=edge">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Place Owner Panel</title>
+                        <title>List of my Places</title>
                     </head>
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -17,7 +17,7 @@
 
 
                     <body>
-                        <h1 class="float-left" >List of My Places</h1>
+                        <h1 class="float-left" >List of my Places</h1>
                             
                         <button type="button" class="btn btn-light float-right mb-3" data-toggle="modal" data-target="#mymodal">Add Spot</button>
                         
@@ -27,9 +27,9 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Info</th>
+                                        <th>Main Category</th>
                                         <th>Tags</th>
-                                        <th>Reviews</th>
+                                        <th>Link</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -38,9 +38,9 @@
                                         <tr>
                                             <td>{{ place.id }}</td>
                                             <td>{{ place.name }}</td>
-                                            <td>{{ place.info }}</td>
+                                            <td>{{ place.main_category }}</td>
                                             <td>{{ place.tags }}</td>
-                                            <td>{{ place.reviews }}</td>
+                                            <td>{{ place.link }}</td>
                                             <td>
                                                 <a class="btn btn-primary" role="button" data-toggle="modal" data-target="#modaledit">Edit</a>
                                                 <a class="btn  btn-danger" role="button" aria-pressed="true"
@@ -58,23 +58,23 @@
                 <h4 class="modal-title">Edit Place</h4>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{url_for('update_places_page')}}" method="post">
                     <div class="form-group">
                         <label>Name:</label>
                         <input type="hidden" name="id" value="id">
                         <input type = "text" class="form-control" name="name"  value="name">
                     </div>
                     <div class="form-group">
-                        <label>Info:</label>
-                        <input type = "text" class="form-control" name="info" value="info">
+                        <label>Main Category:</label>
+                        <input type = "text" class="form-control" name="main_category" value="info">
                     </div>
                     <div class="form-group">
                         <label>Tags:</label>
-                        <input type = "text" class="form-control" name="tags" value="tags">
+                        <input type = "text" class="form-control" name="tags" value="tags" readonly>
                     </div>
                     <div class="form-group">
-                        <label>Reviews:</label>
-                        <input type = "text" class="form-control" name="reviews" value="reviews">
+                        <label>Link:</label>
+                        <input type = "text" class="form-control" name="link" value="reviews">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">Save Changes</button>
@@ -103,16 +103,17 @@
                         <input type = "text" class="form-control" name="name" required="1">
                     </div>
                     <div class="form-group">
-                        <label>Info:</label>
-                        <input type = "text" class="form-control" name="info" required="1">
+                        <label>Main Category:</label>
+                        <input type = "text" class="form-control" name="main_category" required="1">
                     </div>
                     <div class="form-group">
+                        <!-- TODO 0 1 arasında sayı al her bir tag için -->
                         <label>Tags:</label>
                         <input type = "text" class="form-control" name="tags" required="1">
                     </div>
                     <div class="form-group">
-                        <label>Reviews:</label>
-                        <input type = "text" class="form-control" name="reviews" required="1">
+                        <label>Link:</label>
+                        <input type = "text" class="form-control" name="link" required="1">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">Add Place</button>
