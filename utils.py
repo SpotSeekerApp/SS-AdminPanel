@@ -4,13 +4,15 @@ import os, sys
 import argparse
 import numpy as np 
 from datetime import datetime
+import bcrypt
 
 # custom modules
 import config
 
 
-def check_password(encryped_password, plain_input_password):
-    pass
+def check_password(encrypted_password, plain_input_password):
+    # Check if a password matches the hashed password
+    return bcrypt.checkpw(plain_input_password.encode('utf-8'), encrypted_password)
 
 def err_handler(err):
     print ("Exception has occured:", err)

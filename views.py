@@ -9,6 +9,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
 from http import HTTPStatus
+import bcrypt
 
 # custom modules
 import utils
@@ -27,6 +28,10 @@ dummy_places = [
     {"id": 3, "name": "place3", "info": "place info 3", "tags": ["tag1", "tag2"], "reviews": ["review1", "review2"]},
 ]
 
+def encrypt_password(password):
+    # Hash a password using bcrypt
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_password
 
 def main_page():
     admin_id = request.form['admin_id']
@@ -50,7 +55,7 @@ def register_page():
     
     placeowner_data =  {
         "placeowner_name" : request.form['placeowner_name'],
-        "password": request.form['password'],
+        "password": encrypt_password(request.form['password']),
     }
     
     response = requests.post('http://localhost:8080/AddPlaceowner', json=placeowner_data) #TODO: add url
@@ -88,7 +93,6 @@ def access_denied():
 
 def admin_page():
     return render_template("admin.html")
-
 
 def placeowner_page(place_owner_id):
     #global dummy_places
@@ -282,7 +286,7 @@ def edit_users_page(user_id):
         #update database
         return redirect("list_users.html")
     
-
+api_url = "http://localhost:8080/"
 def create_placeowner_places(): #TODO: decide on columns
 
     places_data = [
