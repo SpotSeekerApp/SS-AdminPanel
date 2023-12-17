@@ -1,4 +1,4 @@
-from flask import render_template, request, session, flash, send_file, jsonify
+from flask import render_template, request, session, flash, send_file, jsonify, url_for
 import psycopg2 as dbapi
 from werkzeug.utils import redirect
 import os
@@ -237,12 +237,12 @@ def create_users_page(): #TODO: decide on columns
 def update_users_page(): #TODO: decide on columns
     #print(user_id)
     # user_id = request.form.get('user_id')
-    user_id = request.form['user_id']
-    print(request.form) 
+    #user_id = request.form['user_id']
+    print(request.form.get('user_id')) 
     user_data =  {
-        "user_id" : user_id,
-        "user_name" : request.form['user_name'],
-        "email": request.form['email'],
+        "user_id" : int(request.form.get('user_id')),
+        "user_name" : request.form.get('user_name'),
+        "email": request.form.get('email'),
     }
     
     response = requests.post('http://localhost:8080/UpdateUser', json=user_data) #TODO: add url
@@ -250,16 +250,16 @@ def update_users_page(): #TODO: decide on columns
     response = requests.get('http://localhost:8080/GetAllUsers')
     user_dict = response.json()['Data']
     users_list_status = response.json()['StatusCode']
-
+    print(user_data)
     if status == HTTPStatus.OK:
-        flash("User added successfully", "success")
+        flash("User edited successfully", "success")
     elif status == HTTPStatus.NOT_ACCEPTABLE:
         flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
     else:
-        print(user_data)
-        flash({"error": "Failed to add user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+        flash({"error": "Failed to edit user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
-    return render_template("list_users.html", users=user_dict.values())
+    #return render_template("list_users.html", users=user_dict.values())
+    return redirect(url_for("list_users_page"))
 
 def create_places_page():  #TODO: decide on columns
     
