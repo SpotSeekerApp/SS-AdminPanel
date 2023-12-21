@@ -8,42 +8,42 @@ import config
 
 from controller import main_controller, placeowner_controller, admin_controller, user_controller
 
-app = Flask(__name__)
-app.secret_key = config.SECRET_KEY
-app.config['SESSION_TYPE'] = 'filesystem'
+
 
 BASE_URL = "http://localhost:8080"
 
 
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = config.SECRET_KEY
+    # app.config['SESSION_TYPE'] = 'filesystem'
+    #
+    app.add_url_rule("/", view_func=main_controller.main_page, methods=["GET", "POST"]) # main page 
+    app.add_url_rule("/admin", view_func=main_controller.admin_page)
+    app.add_url_rule("/logout", view_func=main_controller.logout_page)
+    app.add_url_rule("/register", view_func=placeowner_controller.register_page, methods=["GET", "POST"])
+    app.add_url_rule("/login-placeowner", view_func=placeowner_controller.login_placeowner_page, methods=["GET", "POST"])
+
+    #
+    app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=placeowner_controller.placeowner_page, methods=["GET", "POST"])
+
+    #
+    app.add_url_rule("/list-users", view_func=admin_controller.list_users_page, methods=["GET"])
+    app.add_url_rule("/list-places", view_func=admin_controller.list_places_page, methods=["GET", "POST"])
+
+    app.add_url_rule("/create-users", view_func=admin_controller.create_users_page, methods=["POST"])
+    app.add_url_rule("/create-places", view_func=admin_controller.create_places_page, methods=["GET", "POST"])
+
+    app.add_url_rule("/delete-users/<string:user_id>", view_func=admin_controller.delete_users_page, methods=["GET", "POST"])
+    app.add_url_rule("/delete-places", view_func=admin_controller.delete_places_page, methods=["GET", "POST"])
+
+    app.add_url_rule("/update-users", view_func=admin_controller.update_users_page, methods=["GET", "POST"])
+    app.add_url_rule("/update-places", view_func=admin_controller.update_places_page, methods=["GET", "POST"])
 
 
+app = create_app()
 
-#
-app.add_url_rule("/", view_func=main_controller.main_page, methods=["GET", "POST"]) # main page 
-app.add_url_rule("/admin", view_func=main_controller.admin_page)
-app.add_url_rule("/logout", view_func=main_controller.logout_page)
-app.add_url_rule("/register", view_func=placeowner_controller.register_page, methods=["GET", "POST"])
-app.add_url_rule("/login-placeowner", view_func=placeowner_controller.login_placeowner_page, methods=["GET", "POST"])
-
-#
-app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=placeowner_controller.placeowner_page, methods=["GET", "POST"])
-
-#
-app.add_url_rule("/list-users", view_func=admin_controller.list_users_page, methods=["GET"])
-app.add_url_rule("/list-places", view_func=admin_controller.list_places_page, methods=["GET", "POST"])
-
-app.add_url_rule("/create-users", view_func=admin_controller.create_users_page, methods=["POST"])
-app.add_url_rule("/create-places", view_func=admin_controller.create_places_page, methods=["GET", "POST"])
-
-app.add_url_rule("/delete-users/<string:user_id>", view_func=admin_controller.delete_users_page, methods=["GET", "POST"])
-app.add_url_rule("/delete-places", view_func=admin_controller.delete_places_page, methods=["GET", "POST"])
-
-app.add_url_rule("/update-users", view_func=admin_controller.update_users_page, methods=["GET", "POST"])
-app.add_url_rule("/update-places", view_func=admin_controller.update_places_page, methods=["GET", "POST"])
-
-
-
-if __name__ == "__main__":
-    app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
+# if __name__ == "__main__":
+#     app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
 
 
