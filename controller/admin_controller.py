@@ -10,8 +10,8 @@ from model.user import User
 from model.place import Place
 
 # Configuration for Firebase
-import DONTUPLOADME
-firebase_config = DONTUPLOADME.config
+import firebase_config
+firebase_config = firebase_config.config
 
 # Initialize Firebase
 firebase = pyrebase.initialize_app(firebase_config)

@@ -6,8 +6,8 @@ import re
 
 
 # Configuration for Firebase
-import DONTUPLOADME
-config = DONTUPLOADME.config
+import firebase_config
+config = firebase_config.config
 
 # Initialize Firebase
 firebase = pyrebase.initialize_app(config)
