@@ -1,14 +1,14 @@
-import pandas as pd
-import psycopg2 as dbapi
 import os, sys
-import argparse
-import numpy as np 
 from datetime import datetime
 import bcrypt
 
 # custom modules
 import config
 
+def encrypt_password(password):
+    # Hash a password using bcrypt
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_password
 
 def check_password(encrypted_password, plain_input_password):
     # Check if a password matches the hashed password
@@ -26,12 +26,6 @@ def err_handler(err):
     print ("\nERROR:", err, "on line number:", line_num)
     print ("traceback:", traceback, "-- type:", err_type)
 
-def db_connect(DSN):
-    try:
-        conn = dbapi.connect(DSN)
-        return conn
-    except os.error:
-        err_handler(os.error)
 
 input_format = "%d/%m/%Y %I:%M:%S %p"
 def convert_datestyle(timestamp_str):
