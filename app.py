@@ -40,6 +40,8 @@ def create_app():
     app.add_url_rule("/update-users", view_func=admin_controller.update_users_page, methods=["GET", "POST"])
     app.add_url_rule("/update-places", view_func=admin_controller.update_places_page, methods=["GET", "POST"])
 
+    return app
+
 
 app = create_app()
 
