@@ -7,16 +7,45 @@ from http import HTTPStatus
 import utils
 from model.user import User
 from model.place import Place
+from config import API_URL
+from controller.admin_controller import auth
+
 
 def main_page():
-   api_url = 'url'
-   response = requests.get(api_url)
-   
-   if response.status_code == 200:
-       data = response.json()
-       return redirect("/index", data=data)
-   else:
-       return f"Failed to fetch data from api. Status code: {response.status_code}"
+    if request.method == "GET":
+        response = requests.get(API_URL)
+        # if response.status_code == 200:
+        if response.status_code:
+            return render_template("index.html")
+        else:
+            return f"Failed to fetch data from api. Status code: {response.status_code}"
+        
+    elif request.method == "POST":
+        form = request.form
+        try:
+            user = auth.sign_in_with_email_and_password(form['email'], form['password'])
+            response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
+            res_user_type = response.json()["Data"]["user_type"]
+            # if res_user_type != "admin":
+            #     raise ""
+            
+            session["user_type"] = res_user_type
+            session["is_logged_in"] = True
+            session["email"] = user["email"]
+            session["uid"] = user["localId"]
+            
+            status = response.json()['StatusCode']
+
+            if status == HTTPStatus.OK:
+                flash("Admin login success.", "success")
+            else:
+                flash("Error! Failed to admin. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+
+            return render_template("admin.html")       
+        except Exception as e:
+            print("Error occurred: ", e)
+            return render_template("index.html")
+
 
 # def main_page():
 #     admin_id = request.form['admin_id']

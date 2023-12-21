@@ -28,7 +28,14 @@ def list_users_page():
     return render_template("list_users.html", users=user_dict.values())
 
 def list_places_page():
-    response = requests.get('http://localhost:8080/GetAllPlaces')
+    res_user_type = session["user_type"]
+
+    if res_user_type == "place_owner":
+        user_id = session["uid"]
+        response = requests.get(f'http://localhost:8080/GetAllPlaces?user_id={user_id}')
+    else:
+        response = requests.get(f'http://localhost:8080/GetAllPlaces')
+
     place_dict = response.json()['Data']
     status = response.json()['StatusCode']
     print(place_dict.values())

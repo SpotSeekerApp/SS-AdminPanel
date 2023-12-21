@@ -1,12 +1,6 @@
 from flask import render_template, request, session, flash, send_file, jsonify, url_for
-import psycopg2 as dbapi
 from werkzeug.utils import redirect
 import os
-import pandas as pd 
-from datetime import datetime
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 import requests
 from http import HTTPStatus
 import bcrypt
@@ -14,6 +8,7 @@ import bcrypt
 # custom modules
 import utils
 import config
+from config import API_URL
 from model.user import User
 
 from controller.admin_controller import auth
@@ -26,7 +21,6 @@ def register_page():
         password = request.form["pass"]
 
         auth.create_user_with_email_and_password(request.form['email'], request.form['pass'])
-        # Authenticate user
         user = auth.sign_in_with_email_and_password(request.form['email'], request.form['pass'])
 
         user_data = {
@@ -37,7 +31,7 @@ def register_page():
         }
 
 
-        response = requests.post('http://localhost:8080/AddUser', json=user_data) #TODO: add url
+        response = requests.post(f'{API_URL}/AddUser', json=user_data) #TODO: add url
         status = response.json()['StatusCode']
 
         if status == HTTPStatus.OK:
@@ -59,16 +53,15 @@ def login_placeowner_page():
         password = result["pass"]
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            session["is_logged_in"] = True
-            session["email"] = user["email"]
-            session["uid"] = user["localId"]
-            # Fetch user data
-            # Update session data
-
-            response = requests.get(f'http://localhost:8080/GetUserInfo?user_id={user["localId"]}')
+            response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
             res_user_type = response.json()["Data"]["user_type"]
             if res_user_type != "place_owner":
                 raise ""
+            
+            session["user_type"] = res_user_type
+            session["is_logged_in"] = True
+            session["email"] = user["email"]
+            session["uid"] = user["localId"]
             
             status = response.json()['StatusCode']
 
@@ -77,10 +70,7 @@ def login_placeowner_page():
             else:
                 flash("Error! Failed to placeowner user. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
 
-            print("Başarılı")
-            return render_template("list_places.html")
-        
-            # return redirect(url_for('welcome'))
+            return render_template("list_places.html")        
         except Exception as e:
             print("Error occurred: ", e)
             return render_template("login.html")
