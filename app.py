@@ -1,17 +1,9 @@
 from flask import Flask
-import pyrebase
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
-from datetime import datetime
-import re
 # custom modules
 import config
 
-from controller import main_controller, placeowner_controller, admin_controller, user_controller
-
-
-
-BASE_URL = "http://localhost:8080"
-
+from controller import main_controller, placeowner_controller, admin_controller, user_controller, common_controller
 
 def create_app():
     app = Flask(__name__)
@@ -25,27 +17,27 @@ def create_app():
     app.add_url_rule("/login-placeowner", view_func=placeowner_controller.login_placeowner_page, methods=["GET", "POST"])
 
     #
-    app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=placeowner_controller.placeowner_page, methods=["GET", "POST"])
+    # app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=common_controller.list_places_page, methods=["GET", "POST"])
 
     #
     app.add_url_rule("/list-users", view_func=admin_controller.list_users_page, methods=["GET"])
-    app.add_url_rule("/list-places", view_func=admin_controller.list_places_page, methods=["GET", "POST"])
+    app.add_url_rule("/list-places", view_func=common_controller.list_places_page, methods=["GET"])
 
     app.add_url_rule("/create-users", view_func=admin_controller.create_users_page, methods=["POST"])
-    app.add_url_rule("/create-places", view_func=admin_controller.create_places_page, methods=["GET", "POST"])
+    app.add_url_rule("/create-places", view_func=common_controller.create_places_page, methods=["GET", "POST"])
 
     app.add_url_rule("/delete-users/<string:user_id>", view_func=admin_controller.delete_users_page, methods=["GET", "POST"])
-    app.add_url_rule("/delete-places", view_func=admin_controller.delete_places_page, methods=["GET", "POST"])
+    app.add_url_rule("/delete-places", view_func=common_controller.delete_places_page, methods=["GET", "POST"])
 
     app.add_url_rule("/update-users", view_func=admin_controller.update_users_page, methods=["GET", "POST"])
-    app.add_url_rule("/update-places", view_func=admin_controller.update_places_page, methods=["GET", "POST"])
+    app.add_url_rule("/update-places", view_func=common_controller.update_places_page, methods=["GET", "POST"])
 
     return app
 
 
 app = create_app()
 
-# if __name__ == "__main__":
-#     app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
+if __name__ == "__main__":
+    app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
 
 

@@ -3,7 +3,6 @@ from werkzeug.utils import redirect
 import os
 import requests
 from http import HTTPStatus
-import bcrypt
 
 # custom modules
 import utils
@@ -76,53 +75,6 @@ def login_placeowner_page():
             return render_template("login.html")
     else:
         return render_template("login.html")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    placeowner_id = request.form['placeowner_id']
-   
-    response = requests.get(f'http://localhost:8080/GetUserInfo?user_id={user_id}') #TODO: add url
-    status = response.json()['StatusCode']
-    encryped_password = response.json()['password']
-
-    if utils.check_password(encryped_password, request.form['password']):
-        session["loggedin"] = True
-        session["id"] = placeowner_id
-        session["isplaceowner"] = True
-        return render_template("placeowner.html")
-    else:
-        flash("Invalid Password")
-        return render_template("login_placeowner.html")
     
 
-def placeowner_page(place_owner_id):
-    #global dummy_places
-    response = requests.get(f'http://localhost:8080/GetAllPlaces?place_owner_id={place_owner_id}')
-    place_dict = response.json()['Data']
-    status = response.json()['StatusCode']
-    print(place_dict.values())
-
-    return render_template("placeowner.html", places=place_dict.values())
         

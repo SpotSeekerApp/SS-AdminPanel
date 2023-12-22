@@ -1,18 +1,7 @@
 import os, sys
 from datetime import datetime
-import bcrypt
 
 # custom modules
-import config
-
-def encrypt_password(password):
-    # Hash a password using bcrypt
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_password
-
-def check_password(encrypted_password, plain_input_password):
-    # Check if a password matches the hashed password
-    return bcrypt.checkpw(plain_input_password.encode('utf-8'), encrypted_password)
 
 def err_handler(err):
     print ("Exception has occured:", err)
