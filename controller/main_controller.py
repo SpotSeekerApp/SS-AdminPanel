@@ -2,6 +2,9 @@ from flask import render_template, request, session, flash, send_file, jsonify, 
 from werkzeug.utils import redirect
 import requests
 from http import HTTPStatus
+from urllib import error
+import json
+from flask_login import login_user
 
 # custom modules
 import utils
@@ -10,59 +13,44 @@ from model.place import Place
 from config import API_URL
 from controller.admin_controller import auth
 
-
 def main_page():
-    if request.method == "GET":
-        response = requests.get(API_URL)
-        # if response.status_code == 200:
-        if response.status_code:
-            return render_template("index.html")
-        else:
-            return f"Failed to fetch data from api. Status code: {response.status_code}"
-        
-    elif request.method == "POST":
-        form = request.form
+    if request.method == "POST":
+        result = request.form
+        email = result["email"]
+        password = result["password"]
         try:
-            user = auth.sign_in_with_email_and_password(form['email'], form['password'])
+            user = auth.sign_in_with_email_and_password(email, password)
             response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
             res_user_type = response.json()["Data"]["user_type"]
-            # if res_user_type != "admin":
-            #     raise ""
+            if res_user_type != "admin":
+                flash("You're not admin.")
+                return render_template("index.html")
             
             session["user_type"] = res_user_type
             session["is_logged_in"] = True
             session["email"] = user["email"]
             session["uid"] = user["localId"]
+
+            response_json = response.json()["Data"]
+            user = User(user_id=response_json["user_id"], username=response_json["user_name"], user_email=response_json["email"], user_type=response_json["user_type"])
+            login_user(user, remember=True)
             
             status = response.json()['StatusCode']
 
             if status == HTTPStatus.OK:
-                flash("Admin login success.", "success")
+                flash("Admin logged in successfully", "success")
+                return render_template("admin.html")     
             else:
-                flash("Error! Failed to admin. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
-
-            return render_template("admin.html")       
+                flash("Error! Failed to login. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+                return render_template("index.html")
+            
         except Exception as e:
             print("Error occurred: ", e)
             return render_template("index.html")
+    else:
+        return render_template("index.html")
 
 
-# def main_page():
-#     admin_id = request.form['admin_id']
-   
-#     response = requests.get(f'http://localhost:8080/ReturnPassword?username={admin_id}') #TODO: add url
-#     status = response.json()['StatusCode']
-#     encryped_password = response.json()['password']
-
-#     if utils.check_password(encryped_password, request.form['password']):
-#         session["loggedin"] = True
-#         session["id"] = admin_id
-#         session["isadmin"] = True
-#         return render_template("admin.html")
-#     else:
-#         flash("Invalid Password")
-#         return render_template("index.html")
-    
 def logout_page():
     if session is not None:
         session.clear()
@@ -74,3 +62,4 @@ def access_denied():
 
 def admin_page():
     return render_template("admin.html")
+

@@ -22,11 +22,10 @@
                 
               <ul class="navbar-nav nav d-flex flex-column list-unstyled text-dark">
 
-                {% if session['isplaceowner'] %}
+                {% if session['user_type'] == "place_owner" %}
                 <li class="nav-item"><a href="{{ url_for('main_page') }}" class="nav-link">Dashboard</a></li>
                 <li class="nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">My Places</a></li>
-                <li class="nav-item"><a href="{{ url_for('create_places_page') }}" class="nav-link">Add Spot</a></li>
-                {% elif session['isadmin'] %}
+                {% elif session['user_type'] == "admin" %}
                 <li class="nav-item"><a href="{{ url_for('list_users_page') }}" class="nav-link">Users</a></li>
                 <li class="nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">Spots</a></li>
                 {% else %}
@@ -36,8 +35,8 @@
             <div>
               <ul class="list-unstyled">
                 <div class="row d-flex justify-content-end">
-                {% if 'id' in session %}
-                  {{session['name']}} {{session['surname']}}
+                {% if 'uid' in session %}
+                  {{session['email']}}
                   <a class="btn btn-outline-danger mx-3" role="button" aria-pressed="true"
                     href="{{ url_for('logout_page') }}">Logout</a>
                 {% else %}

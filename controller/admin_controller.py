@@ -3,6 +3,7 @@ from werkzeug.utils import redirect
 import requests
 from http import HTTPStatus
 import pyrebase
+from flask_login import login_required
 
 # custom modules
 from model.user import User
@@ -10,6 +11,7 @@ from model.place import Place
 from controller.common_controller import auth 
 from config import API_URL
 
+@login_required
 def update_users_page(): #TODO: decide on columns
     user_data = User(user_id=request.form.get('user_id'),
                       username=request.form.get('user_name'),
@@ -29,13 +31,14 @@ def update_users_page(): #TODO: decide on columns
 
     return redirect(url_for("list_users_page"))
 
+@login_required
 def list_users_page():
     response = requests.get(f'{API_URL}/GetAllUsers')
     user_dict = response.json()['Data']
     status = response.json()['StatusCode']
     return render_template("list_users.html", users=user_dict.values())
 
-
+@login_required
 def create_users_page(): #TODO: decide on columns
 
     try:
@@ -67,6 +70,7 @@ def create_users_page(): #TODO: decide on columns
         flash("User couldnt registered:")
         return redirect(url_for("list_users_page"))
 
+@login_required
 def delete_users_page(user_id):
     print("user_id", user_id)
     user_data = User(user_id=user_id).to_json()
@@ -83,36 +87,3 @@ def delete_users_page(user_id):
         flash({"error": "Failed to remove user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
     return redirect(url_for("list_users_page"))
-
-def admin_login_page():
-    if request.method == "POST":
-        result = request.form
-        email = result["email"]
-        password = result["pass"]
-        try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
-            res_user_type = response.json()["Data"]["user_type"]
-            if res_user_type != "admin":
-                flash("You're not admin.")
-                return render_template("index.html")
-            
-            session["user_type"] = res_user_type
-            session["is_logged_in"] = True
-            session["email"] = user["email"]
-            session["uid"] = user["localId"]
-            
-            status = response.json()['StatusCode']
-
-            if status == HTTPStatus.OK:
-                flash("Admin logged in successfully", "success")
-                return render_template("admin.html")     
-            else:
-                flash("Error! Failed to login. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
-                return render_template("index.html")
-            
-        except Exception as e:
-            print("Error occurred: ", e)
-            return render_template("admin.html")
-    else:
-        return render_template("index.html")

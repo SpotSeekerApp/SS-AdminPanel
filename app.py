@@ -1,14 +1,27 @@
-from flask import Flask
+from flask_login import LoginManager
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
 # custom modules
 import config
 
 from controller import main_controller, placeowner_controller, admin_controller, user_controller, common_controller
+from model.user import User
+
+login_manager = LoginManager()
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = User()
+    user.get_user_from_db(user_id)
+    return user
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = config.SECRET_KEY
     # app.config['SESSION_TYPE'] = 'filesystem'
+
+
+    login_manager.init_app(app)
+
     #
     app.add_url_rule("/", view_func=main_controller.main_page, methods=["GET", "POST"]) # main page 
     app.add_url_rule("/admin", view_func=main_controller.admin_page)
@@ -39,5 +52,4 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
-
 

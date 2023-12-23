@@ -3,6 +3,8 @@ from werkzeug.utils import redirect
 import requests
 from http import HTTPStatus
 import pyrebase
+from flask_login import login_required
+
 
 # custom modules
 from model.user import User
@@ -19,6 +21,7 @@ firebase = pyrebase.initialize_app(firebase_config)
 # Get reference to the auth service and database service
 auth = firebase.auth()
 
+@login_required
 def list_places_page():
     res_user_type = session["user_type"]
 
@@ -34,14 +37,16 @@ def list_places_page():
 
     return render_template("list_places.html", places=place_dict.values())
 
+@login_required
 def update_places_page():
     place_data = Place(place_name=request.form['name'],
                       main_category=request.form['main_category'],
                       tags=request.form['tags'],
-                      link=request.form['link']).to_json()
+                      link=request.form['link'],
+                      user_id=session["uid"]).to_json()
     
     
-    response = requests.post(f'{API_URL}/UpdatePlace', json=[place_data]) #TODO: add url
+    response = requests.post(f'{API_URL}/UpdatePlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']
     response = requests.get(f'{API_URL}/GetAllPlaces')
 
@@ -54,16 +59,16 @@ def update_places_page():
 
     return redirect(url_for("list_places_page"))
 
-
+@login_required
 def create_places_page():  #TODO: decide on columns
     place_data = Place(place_name=request.form['name'],
-                      main_category=request.form['main_category'],
-                      tags=request.form['tags'],
-                      link=request.form['link']).to_json()
+                    main_category=request.form['main_category'],
+                    tags=request.form['tags'],
+                    link=request.form['link'],
+                    user_id=session["uid"]).to_json()
 
-    response = requests.post(f'{API_URL}/AddPlace', json=[place_data]) #TODO: add url
+    response = requests.post(f'{API_URL}/AddPlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']
-    response = requests.get(f'{API_URL}/GetAllPlaces')
 
     if status == HTTPStatus.OK:
         flash("Place added successfully", "success")
@@ -75,14 +80,15 @@ def create_places_page():  #TODO: decide on columns
     return redirect(url_for("list_places_page"))
 
 
-
+@login_required
 def delete_places_page():
     place_data = Place(place_name=request.form['name'],
                       main_category=request.form['main_category'],
                       tags=request.form['tags'],
-                      link=request.form['link']).to_json()
+                      link=request.form['link'],
+                      user_id=session["uid"]).to_json()
 
-    response = requests.post(f'{API_URL}/RemovePlace', json=[place_data]) #TODO: add url
+    response = requests.post(f'{API_URL}/RemovePlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']
     response = requests.get(f'{API_URL}/GetAllPlaces')
 
