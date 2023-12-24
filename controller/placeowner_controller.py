@@ -5,21 +5,24 @@ import requests
 from http import HTTPStatus
 
 # custom modules
-import utils
-import config
 from config import API_URL
-from model.user import User
-
 from controller.admin_controller import auth
 
 
 def register_page():
+    print("placeowner register page rendered")
     if request.method == "POST":
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["pass"]
+        
+        try:
+            auth.create_user_with_email_and_password(request.form['email'], request.form['pass'])
+        except Exception as error:
+            flash(f"Error occured", error)
+            print(error)
+            return render_template("signup.html")
 
-        auth.create_user_with_email_and_password(request.form['email'], request.form['pass'])
         user = auth.sign_in_with_email_and_password(request.form['email'], request.form['pass'])
 
         user_data = {
@@ -40,7 +43,7 @@ def register_page():
         else:
             flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
 
-        return render_template("login_placeowner.html")
+        return render_template("login.html")
     else:
         return render_template("signup.html")
 
@@ -66,15 +69,18 @@ def login_placeowner_page():
 
             if status == HTTPStatus.OK:
                 flash("Placeowner added successfully", "success")
+                return render_template("list_places.html")    
             else:
                 flash("Error! Failed to placeowner user. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
 
-            return render_template("list_places.html")        
-        except Exception as e:
-            print("Error occurred: ", e)
+            return render_template("login.html")       
+        except Exception as error:
+            flash(f"Error occured", error)
+            print(error)
             return render_template("login.html")
     else:
         return render_template("login.html")
     
+
 
         

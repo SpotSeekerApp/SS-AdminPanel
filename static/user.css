@@ -1,30 +1,21 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins');
 
 /* BASIC */
 
-body {
-  font-family: "Poppins", sans-serif;
-  height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  
-}
 
-a {
+#formContent a {
   color: #92badd;
   display:inline-block;
   text-decoration: none;
   font-weight: 400;
 }
 
-h2 {
+.formTitle {
   text-align: center;
   font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
   display:inline-block;
-  margin: 40px 8px 10px 8px; 
+  margin: 10px 8px 10px 8px; 
   color: #cccccc;
 }
 
@@ -32,27 +23,26 @@ h2 {
 
 /* STRUCTURE */
 
-.wrapper {
+.register-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-direction: column; 
-  justify-content: center;
   width: 100%;
-  min-height: 100%;
-  padding: 20px;
+  max-width: 400px; /* Adjust the maximum width as needed */
+  margin-top: 20px; /* Adjust the top margin as needed */
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: 14px; /* Adjust the font size as needed */
 }
-
 #formContent {
   -webkit-border-radius: 10px 10px 10px 10px;
   border-radius: 10px 10px 10px 10px;
   background: #fff;
-  padding: 30px;
+  padding-bottom: 10px !important; 
   width: 90%;
-  max-width: 450px;
+  max-width: 450px; 
   position: relative;
   padding: 0px;
-  -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
-  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   text-align: center;
 }
 
@@ -66,14 +56,13 @@ h2 {
 }
 
 
-
 /* TABS */
 
-h2.inactive {
+.formTitle.inactive {
   color: #cccccc;
 }
 
-h2.active {
+.formTitle.active {
   color: #0d0d0d;
   border-bottom: 2px solid #5fbae9;
 }
@@ -82,7 +71,7 @@ h2.active {
 
 /* FORM TYPOGRAPHY*/
 
-input[type=button], input[type=submit], input[type=reset]  {
+.register-wrapper input[type=button],.register-wrapper input[type=submit], .register-wrapper input[type=reset]  {
   background-color: #56baed;
   border: none;
   color: white;
@@ -93,11 +82,9 @@ input[type=button], input[type=submit], input[type=reset]  {
   text-transform: uppercase;
   font-size: 13px;
   width: 85%;
-  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
-  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
   -webkit-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
-  margin: 5px 20px 40px 20px;
+  margin: 5px 20px 5px 20px;
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
   -ms-transition: all 0.3s ease-in-out;
@@ -105,11 +92,11 @@ input[type=button], input[type=submit], input[type=reset]  {
   transition: all 0.3s ease-in-out;
 }
 
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+.register-wrapper input[type=button]:hover, .register-wrapper input[type=submit]:hover,.register-wrapper input[type=reset]:hover  {
   background-color: #39ace7;
 }
 
-input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+.register-wrapper input[type=button]:active, .register-wrapper input[type=submit]:active,.register-wrapper input[type=reset]:active  {
   -moz-transform: scale(0.95);
   -webkit-transform: scale(0.95);
   -o-transform: scale(0.95);
@@ -117,7 +104,7 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active  
   transform: scale(0.95);
 }
 
-input[type=email], input[type=password], input[type=text] {
+.register-wrapper input[type=email], .register-wrapper input[type=password],.register-wrapper input[type=text] {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
@@ -138,12 +125,12 @@ input[type=email], input[type=password], input[type=text] {
   border-radius: 5px 5px 5px 5px;
 }
 
-input[type=email]:focus, input[type=password]:focus, input[type=text]:focus {
+.register-wrapper input[type=email]:focus, .register-wrapper input[type=password]:focus, .register-wrapper input[type=text]:focus {
   background-color: #fff;
   border-bottom: 2px solid #5fbae9;
 }
 
-input[type=email]:placeholder, input[type=password]:placeholder, input[type=text]:placeholder {
+.register-wrapper input[type=email]:placeholder, .register-wrapper input[type=password]:placeholder,.register-wrapper input[type=text]:placeholder {
   color: #cccccc;
 }
 

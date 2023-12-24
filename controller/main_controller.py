@@ -7,11 +7,14 @@ import json
 from flask_login import login_user
 
 # custom modules
-import utils
 from model.user import User
-from model.place import Place
 from config import API_URL
 from controller.admin_controller import auth
+import re 
+
+def check_password_strength(password):
+    # At least one lower case letter, one upper case letter, one digit, one special character, and at least 8 characters long
+    return re.match(r'^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$', password) is not None
 
 def main_page():
     if request.method == "POST":
@@ -20,7 +23,8 @@ def main_page():
         password = result["password"]
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
+            req = f'{API_URL}/GetUserInfo?user_id={user["localId"]}'
+            response = requests.get(req)
             res_user_type = response.json()["Data"]["user_type"]
             if res_user_type != "admin":
                 flash("You're not admin.")
@@ -54,12 +58,6 @@ def main_page():
 def logout_page():
     if session is not None:
         session.clear()
+        session["is_logged_in"] = False
     
     return redirect("/")
-
-def access_denied():
-    return render_template("access-denied.html")
-
-def admin_page():
-    return render_template("admin.html")
-

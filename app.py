@@ -22,17 +22,11 @@ def create_app():
 
     login_manager.init_app(app)
 
-    #
     app.add_url_rule("/", view_func=main_controller.main_page, methods=["GET", "POST"]) # main page 
-    app.add_url_rule("/admin", view_func=main_controller.admin_page)
-    app.add_url_rule("/logout", view_func=main_controller.logout_page)
+    app.add_url_rule("/logout", view_func=main_controller.logout_page,  methods=["GET", "POST"])
     app.add_url_rule("/register", view_func=placeowner_controller.register_page, methods=["GET", "POST"])
     app.add_url_rule("/login-placeowner", view_func=placeowner_controller.login_placeowner_page, methods=["GET", "POST"])
 
-    #
-    # app.add_url_rule("/place-owner/<string:place_owner_id>", view_func=common_controller.list_places_page, methods=["GET", "POST"])
-
-    #
     app.add_url_rule("/list-users", view_func=admin_controller.list_users_page, methods=["GET"])
     app.add_url_rule("/list-places", view_func=common_controller.list_places_page, methods=["GET"])
 

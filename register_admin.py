@@ -5,7 +5,6 @@ import requests
 from http import HTTPStatus
 
 # custom modules
-import utils
 import config
 from config import API_URL
 from model.user import User
@@ -25,7 +24,6 @@ user_data = {
     "email":email,
     "user_type":"admin" # normal, place_owner, admin
 }
-
 
 response = requests.post(f'{API_URL}/AddUser', json=user_data) #TODO: add url
 status = response.json()['StatusCode']
