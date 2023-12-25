@@ -14,6 +14,11 @@ def load_user(user_id):
     user.get_user_from_db(user_id)
     return user
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    # do stuff
+    return render_template("index.html")
+
 def create_app():
     app = Flask(__name__)
     app.secret_key = config.SECRET_KEY
@@ -34,8 +39,7 @@ def create_app():
     app.add_url_rule("/create-places", view_func=common_controller.create_places_page, methods=["GET", "POST"])
 
     app.add_url_rule("/delete-users/<string:user_id>", view_func=admin_controller.delete_users_page, methods=["GET", "POST"])
-    app.add_url_rule("/delete-places", view_func=common_controller.delete_places_page, methods=["GET", "POST"])
-
+    app.add_url_rule("/delete-places/<string:place_id>", view_func=common_controller.delete_places_page, methods=["GET", "POST"])
     app.add_url_rule("/update-users", view_func=admin_controller.update_users_page, methods=["GET", "POST"])
     app.add_url_rule("/update-places", view_func=common_controller.update_places_page, methods=["GET", "POST"])
 

@@ -81,14 +81,10 @@ def create_places_page():  #TODO: decide on columns
 
 
 @login_required
-def delete_places_page():
-    place_data = Place(place_name=request.form['name'],
-                      main_category=request.form['main_category'],
-                      tags=request.form['tags'],
-                      link=request.form['link'],
-                      user_id=session["uid"]).to_json()
-
+def delete_places_page(place_id):
+    place_data = Place(place_id=place_id).to_json()
     response = requests.post(f'{API_URL}/RemovePlace', json=place_data) #TODO: add url
+    print(response)
     status = response.json()['StatusCode']
     response = requests.get(f'{API_URL}/GetAllPlaces')
 

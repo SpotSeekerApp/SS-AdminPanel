@@ -3,76 +3,66 @@
 {% block content %}
 
 <!-- Welcome Text -->
-<div class="row w-100 mt-5 mb-5">
-    <div class="col-sm-12">
-        <h2 class="translate-middle text-center">Welcome to SpotSeeker Panel</h2>
-    </div>
+<h2 class="translate-middle text-center">Welcome to SpotSeeker Panel</h2>
+{% if 'uid' in session %}
+<div class="my-3 d-flex justify-content-center">
+    <a class="btn btn-light mx-3" role="button" aria-pressed="true" href="{{ url_for('list_places_page') }}">List Places</a>
+    {% if session['user_type'] == "admin" %}
+    <a class="btn btn-light mx-3" role="button" aria-pressed="true" href="{{ url_for('list_users_page') }}">List Users</a>
+    {% endif %}
 </div>
-
+{% else %}
 <div class="container d-flex align-items-top justify-content-center position-relative">
-    <div class="row w-100">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>SpotSeeker</title>
-        </head>
-        
-        {% if 'id' in session %}
+<!-- Left Column - Login Form -->
+<aside class="col-sm-6">
+    <div class="card">
+        <article class="card-body">
+            <h4 class="card-title text-center mb-4 mt-1">Admin Login</h4>
+            <hr>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-light text-center">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <!-- <form action="/" method="post"  onsubmit="return validateForm()"> -->
+            <form action="/" method="post" >
+                <div class="form-group my-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text h-100"> <i class="fa fa-user"></i> </span>
+                        </div>
+                        <input name="email" class="form-control" placeholder="Email" id="email" type="email">
+                    </div> <!-- input-group.// -->
+                </div> <!-- form-group// -->
+                <div class="form-group mb-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text h-100"> <i class="fa fa-lock"></i> </span>
+                        </div>
+                        <input name="password" id="password" class="form-control" placeholder="************"
+                            type="password">
+                    </div> <!-- input-group.// -->
+                </div> <!-- form-group// -->
+                <div class="form-group d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-dark btn-block"> Login </button>
+                </div> <!-- form-group// -->
+            </form>
+        </article>
+    </div> <!-- card.// -->
+</aside> <!-- col-sm-6 -->
 
-        {% else %}
-        <!-- Left Column - Login Form -->
-        <aside class="col-sm-6">
-            <div class="card">
-                <article class="card-body">
-                    <h4 class="card-title text-center mb-4 mt-1">Admin Login</h4>
-                    <hr>
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p class="text-light text-center">{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% endwith %}
-                    <form action="/" method="post"  onsubmit="return validateForm()">
-                        <div class="form-group my-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text h-100"> <i class="fa fa-user"></i> </span>
-                                </div>
-                                <input name="email" class="form-control" placeholder="Email" id="email" type="email">
-                            </div> <!-- input-group.// -->
-                        </div> <!-- form-group// -->
-                        <div class="form-group mb-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text h-100"> <i class="fa fa-lock"></i> </span>
-                                </div>
-                                <input name="password" id="password" class="form-control" placeholder="************"
-                                    type="password">
-                            </div> <!-- input-group.// -->
-                        </div> <!-- form-group// -->
-                        <div class="form-group d-flex justify-content-center mt-4">
-                            <button type="submit" class="btn btn-dark btn-block"> Login </button>
-                        </div> <!-- form-group// -->
-                    </form>
-                </article>
-            </div> <!-- card.// -->
-        </aside> <!-- col-sm-6 -->
-
-        <!-- Right Column - Additional Information -->
-        <aside class="col-sm-6 d-flex align-items-center">
-            <div class="card h-100" style="width: 100%; margin-bottom: 0; margin-right: 0;">
-                <div class="card-body text-center">
-                    <h4 class="mt-5" style="color: #dc3545;">Are you a place owner?</h4>
-                    <a class="btn mt-3 btn-outline-dark" role="button" aria-pressed="true" href="{{ url_for('login_placeowner_page') }}">Login</a>
-                    <a class="btn btn-outline-dark mt-3" role="button" aria-pressed="true" href="{{ url_for('register_page') }}">Sign Up</a>
-                </div>
-            </div>
-        </aside> <!-- col-sm-6 -->
-        {% endif %}
-        
-    </div> <!-- row.// -->
+<!-- Right Column - Additional Information -->
+<aside class="col-sm-6 d-flex align-items-center">
+    <div class="card h-100" style="width: 100%; margin-bottom: 0; margin-right: 0;">
+        <div class="card-body text-center">
+            <h4 class="mt-5" style="color: #dc3545;">Are you a place owner?</h4>
+            <a class="btn mt-3 btn-outline-dark" role="button" aria-pressed="true" href="{{ url_for('login_placeowner_page') }}">Login</a>
+            <a class="btn btn-outline-dark mt-3" role="button" aria-pressed="true" href="{{ url_for('register_page') }}">Sign Up</a>
+        </div>
+    </div>
+</aside> <!-- col-sm-6 -->
 </div>
-
+{% endif %}
 {% endblock %}

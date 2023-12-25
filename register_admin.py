@@ -12,7 +12,7 @@ from model.user import User
 from controller.admin_controller import auth
 
 name = "admin"
-email = "zeynepbetulaltundal@gmail.com"
+email = "admin@gmail.com"
 password = "admin123"
 
 auth.create_user_with_email_and_password(email, password)
@@ -22,7 +22,7 @@ user_data = {
     "user_name":name,
     "user_id":user["localId"],
     "email":email,
-    "user_type":"admin" # normal, place_owner, admin
+    "user_type":"admin" # normal, place_owner, admin 
 }
 
 response = requests.post(f'{API_URL}/AddUser', json=user_data) #TODO: add url

@@ -43,7 +43,7 @@ def main_page():
 
             if status == HTTPStatus.OK:
                 flash("Admin logged in successfully", "success")
-                return render_template("admin.html")     
+                return render_template("index.html")     
             else:
                 flash("Error! Failed to login. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
                 return render_template("index.html")
