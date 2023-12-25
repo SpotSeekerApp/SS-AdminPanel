@@ -7,19 +7,8 @@ from flask_login import login_required
 
 
 # custom modules
-from model.user import User
 from model.place import Place
 from config import API_URL
-
-# Configuration for Firebase
-import firebase_config
-firebase_config = firebase_config.config
-
-# Initialize Firebase
-firebase = pyrebase.initialize_app(firebase_config)
-
-# Get reference to the auth service and database service
-auth = firebase.auth()
 
 @login_required
 def list_places_page():
@@ -61,11 +50,11 @@ def update_places_page():
 
 @login_required
 def create_places_page():  #TODO: decide on columns
-    place_data = Place(place_name=request.form['name'],
-                    main_category=request.form['main_category'],
-                    tags=request.form['tags'],
-                    link=request.form['link'],
-                    user_id=session["uid"]).to_json()
+    place_data = Place( place_name=request.form['name'],
+                        main_category=request.form['main_category'],
+                        tags=request.form['tags'],
+                        link=request.form['link'],
+                        user_id=session["uid"]).to_json()
 
     response = requests.post(f'{API_URL}/AddPlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']

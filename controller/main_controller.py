@@ -4,12 +4,11 @@ import requests
 from http import HTTPStatus
 from urllib import error
 import json
-from flask_login import login_user
+from flask_login import login_user, login_manager, login_required, logout_user
 
 # custom modules
 from model.user import User
 from config import API_URL
-from controller.admin_controller import auth
 import re 
 
 def check_password_strength(password):
@@ -22,24 +21,23 @@ def main_page():
         email = result["email"]
         password = result["password"]
         try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            req = f'{API_URL}/GetUserInfo?user_id={user["localId"]}'
-            response = requests.get(req)
-            res_user_type = response.json()["Data"]["user_type"]
-            if res_user_type != "admin":
-                flash("You're not admin.")
-                return render_template("index.html")
-            
-            session["user_type"] = res_user_type
+            user, response = User.sign_in_to_app(email, password, "admin")
+            status = response.json()['StatusCode']
+            if status == HTTPStatus.OK:
+                pass
+            else:
+                flash("Error! Failed for logging in admin. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+                return render_template("login.html")    
+
+            session["user_type"] = "admin"
             session["is_logged_in"] = True
             session["email"] = user["email"]
             session["uid"] = user["localId"]
 
+            
             response_json = response.json()["Data"]
             user = User(user_id=response_json["user_id"], username=response_json["user_name"], user_email=response_json["email"], user_type=response_json["user_type"])
             login_user(user, remember=True)
-            
-            status = response.json()['StatusCode']
 
             if status == HTTPStatus.OK:
                 flash("Admin logged in successfully", "success")
@@ -54,10 +52,10 @@ def main_page():
     else:
         return render_template("index.html")
 
-
+@login_required
 def logout_page():
+    logout_user()
     if session is not None:
         session.clear()
-        session["is_logged_in"] = False
     
-    return redirect("/")
+    return render_template("index.html")

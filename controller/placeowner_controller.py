@@ -3,11 +3,12 @@ from werkzeug.utils import redirect
 import os
 import requests
 from http import HTTPStatus
+from flask_login import login_user
 
 # custom modules
 from config import API_URL
-from controller.admin_controller import auth
-
+from web_api_admin import Admin, OtherUsers
+from model.user import User
 
 def register_page():
     print("placeowner register page rendered")
@@ -17,65 +18,55 @@ def register_page():
         password = request.form["pass"]
         
         try:
-            auth.create_user_with_email_and_password(request.form['email'], request.form['pass'])
+            user, response = User.add_user_to_db(email, password, name, "place_owner")
+
+            status = response.json()['StatusCode']
+            if status == HTTPStatus.OK:
+                pass
+            elif status == HTTPStatus.NOT_ACCEPTABLE:
+                flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
+            else:
+                flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+
+            return render_template("login.html")
+    
         except Exception as error:
             flash(f"Error occured", error)
             print(error)
             return render_template("signup.html")
 
-        user = auth.sign_in_with_email_and_password(request.form['email'], request.form['pass'])
-
-        user_data = {
-            "user_name":name,
-            "user_id":user["localId"],
-            "email":email,
-            "user_type":"place_owner" # normal, place_owner, admin
-        }
-
-
-        response = requests.post(f'{API_URL}/AddUser', json=user_data) #TODO: add url
-        status = response.json()['StatusCode']
-
-        if status == HTTPStatus.OK:
-            flash("Placeowner added successfully", "success")
-        elif status == HTTPStatus.NOT_ACCEPTABLE:
-            flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
-        else:
-            flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
-
-        return render_template("login.html")
     else:
         return render_template("signup.html")
 
 
 def login_placeowner_page():
     if request.method == "POST":
-        result = request.form
-        email = result["email"]
-        password = result["pass"]
+        email = request.form["email"]
+        password = request.form["pass"]
         try:
-            user = auth.sign_in_with_email_and_password(email, password)
-            response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
-            res_user_type = response.json()["Data"]["user_type"]
-            if res_user_type != "place_owner":
-                raise ""
-            
-            session["user_type"] = res_user_type
+            user, response = User.sign_in_to_app(email, password, "place_owner")
+
+            status = response.json()['StatusCode']
+            if status == HTTPStatus.OK:
+                pass
+            else:
+                flash("Error! Failed to placeowner user. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+                return render_template("login.html")    
+
+            session["user_type"] = "place_owner"
             session["is_logged_in"] = True
             session["email"] = user["email"]
             session["uid"] = user["localId"]
-            
+
             status = response.json()['StatusCode']
+            response_json = response.json()["Data"]
+            user = User(user_id=response_json["user_id"], username=response_json["user_name"], user_email=response_json["email"], user_type=response_json["user_type"])
+            login_user(user, remember=True)
 
-            if status == HTTPStatus.OK:
-                flash("Placeowner added successfully", "success")
-                return render_template("list_places.html")    
-            else:
-                flash("Error! Failed to placeowner user. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
 
-            return render_template("login.html")       
+            return render_template("placeowner.html")       
         except Exception as error:
-            flash(f"Error occured", error)
+            flash(f"Error occured {error}", error)
             print(error)
             return render_template("login.html")
     else:

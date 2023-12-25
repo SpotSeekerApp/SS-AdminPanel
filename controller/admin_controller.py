@@ -8,7 +8,6 @@ from flask_login import login_required
 # custom modules
 from model.user import User
 from model.place import Place
-from controller.common_controller import auth 
 from config import API_URL
 
 @login_required
