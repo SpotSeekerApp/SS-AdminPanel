@@ -34,36 +34,21 @@ def update_users_page(): #TODO: decide on columns
 def list_users_page():
     response = requests.get(f'{API_URL}/GetAllUsers')
     user_dict = response.json()['Data']
-    status = response.json()['StatusCode']
     return render_template("list_users.html", users=user_dict.values())
 
 @login_required
 def create_users_page(): #TODO: decide on columns
 
     try:
-        auth.create_user_with_email_and_password(request.form.get('email'), request.form.get('password'))
-        # Authenticate user
-        user = auth.sign_in_with_email_and_password(request.form.get('email'),request.form.get('password'))
-    
-        selected_options = request.form.getlist('userType')
-        user_data = User(user_id=user["localId"],
-                      username=request.form.get('user_name'),
-                      user_email=request.form.get('email'),
-                      user_password=None,
-                      user_type=selected_options[0]).to_json()
-        
-        print("user_data",user_data)
-        response = requests.post(f'{API_URL}/AddUser', json=user_data) #TODO: add url
+        user, response = User.add_user_to_db(request.form.get('email'), request.form.get('password'), request.form.get('user_name'), request.form.getlist('userType')[0])
         status = response.json()['StatusCode']
-        response = requests.get(f'{API_URL}/GetAllUsers')
-
         if status == HTTPStatus.OK:
-           flash("User added successfully", "success")
+            pass
         elif status == HTTPStatus.NOT_ACCEPTABLE:
-           flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
+            flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
         else:
-           flash("Error! Failed to add user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
-    
+            flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+
         return redirect(url_for("list_users_page"))
     except:
         flash("User couldnt registered:")

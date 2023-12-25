@@ -144,14 +144,14 @@ class OtherUsers:
 
 # # user = Admin.add_user(email, password)
 
-user_data = {
-    "user_name":"THEONE",
-    "user_id":"hS9jSLROuxS2lUh5ncX1nPMueMC2",
-    "email":"gundogdu.emircan@outlook.com",
-    "user_type":"admin" # normal, place_owner, admin 
-}
+# user_data = {
+#     "user_name":"THEONE",
+#     "user_id":"hS9jSLROuxS2lUh5ncX1nPMueMC2",
+#     "email":"gundogdu.emircan@outlook.com",
+#     "user_type":"admin" # normal, place_owner, admin 
+# }
 
-response = requests.post(f'{"https://database-demo-api-5igkar365a-oa.a.run.app/"}/RemoveUser', json={"user_id":"aaMvEJt0zgNjB5FOkfH9WFCO0VO2"})
+# response = requests.post(f'{"https://database-demo-api-5igkar365a-oa.a.run.app/"}/RemoveUser', json={"user_id":"aaMvEJt0zgNjB5FOkfH9WFCO0VO2"})
 
-response = requests.post(f'{"https://database-demo-api-5igkar365a-oa.a.run.app/"}/AddUser', json=user_data)
-print(response)
+# response = requests.post(f'{"https://database-demo-api-5igkar365a-oa.a.run.app/"}/AddUser', json=user_data)
+# print(response)

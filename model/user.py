@@ -47,6 +47,7 @@ class User(UserMixin):
             return user,response
         except:
             raise Exception("Sign in error!")
+
         
     def get_user_from_db(self, user_id):
         response = requests.get(f"{API_URL}GetUserInfo?user_id={user_id}").json()["Data"]
