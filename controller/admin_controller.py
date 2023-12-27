@@ -9,6 +9,7 @@ from flask_login import login_required
 from model.user import User
 from model.place import Place
 from config import API_URL
+from web_api_admin import Admin
 
 @login_required
 def update_users_page(): #TODO: decide on columns
@@ -43,7 +44,7 @@ def create_users_page(): #TODO: decide on columns
         user, response = User.add_user_to_db(request.form.get('email'), request.form.get('password'), request.form.get('user_name'), request.form.getlist('userType')[0])
         status = response.json()['StatusCode']
         if status == HTTPStatus.OK:
-            pass
+            flash("User added successfully", HTTPStatus.OK)
         elif status == HTTPStatus.NOT_ACCEPTABLE:
             flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
         else:
@@ -59,6 +60,8 @@ def delete_users_page(user_id):
     print("user_id", user_id)
     user_data = User(user_id=user_id).to_json()
     print("user_data", user_data)
+
+    Admin.remove_user(user_id)
     response = requests.post(f'{API_URL}/RemoveUser', json=user_data) #TODO: add url
     status = response.json()['StatusCode']
     response = requests.get(f'{API_URL}/GetAllUsers')

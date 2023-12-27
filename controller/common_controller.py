@@ -28,12 +28,13 @@ def list_places_page():
 
 @login_required
 def update_places_page():
-    place_data = Place(place_name=request.form['name'],
-                      main_category=request.form['main_category'],
-                      tags=request.form['tags'],
-                      link=request.form['link'],
-                      user_id=session["uid"]).to_json()
-    
+    place_data = Place( place_id=request.form['place_id'],
+                        place_name=request.form['name'],
+                        main_category=request.form['main_category'],
+                        tags=[request.form['tags']],
+                        link=request.form['link'],
+                        user_id=session["uid"]).to_json()
+    print(place_data)
     
     response = requests.post(f'{API_URL}/UpdatePlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']
@@ -52,10 +53,10 @@ def update_places_page():
 def create_places_page():  #TODO: decide on columns
     place_data = Place( place_name=request.form['name'],
                         main_category=request.form['main_category'],
-                        tags=request.form['tags'],
+                        tags=[request.form['tags']],
                         link=request.form['link'],
                         user_id=session["uid"]).to_json()
-
+    print(place_data)
     response = requests.post(f'{API_URL}/AddPlace', json=place_data) #TODO: add url
     status = response.json()['StatusCode']
 

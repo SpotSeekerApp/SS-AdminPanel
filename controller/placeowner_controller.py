@@ -64,7 +64,7 @@ def login_placeowner_page():
             login_user(user, remember=True)
 
 
-            return render_template("placeowner.html")       
+            return render_template("list_places.html")       
         except Exception as error:
             flash(f"Error occured {error}", error)
             print(error)

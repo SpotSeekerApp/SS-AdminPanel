@@ -40,14 +40,14 @@ def main_page():
             login_user(user, remember=True)
 
             if status == HTTPStatus.OK:
-                flash("Admin logged in successfully", "success")
+                print("Admin logged in successfully", "success")
                 return render_template("index.html")     
             else:
                 flash("Error! Failed to login. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
                 return render_template("index.html")
             
         except Exception as e:
-            print("Error occurred: ", e)
+            flash("Error occurred: ", e)
             return render_template("index.html")
     else:
         return render_template("index.html")
