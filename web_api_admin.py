@@ -52,21 +52,18 @@ class OtherUsers:
         
         return response.json()
 
-    def changePassword(idToken, password):
+    def send_reset_password_mail(email):
         body = {
-            "idToken": idToken,
-            "password": password
+            "requestType": "PASSWORD_RESET",
+            "email": email
         }
 
-        response = requests.post(f"https://identitytoolkit.googleapis.com/v1/accounts:update?key={WEBAPIKEY}", data=body)
+        response = requests.post(f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={WEBAPIKEY}", data=body)
 
         if response.status_code != http.HTTPStatus.OK:
-            try: 
-                print("Error", response.json()["error"]["message"])
-            except KeyError:
-                print("Unknown error")
+            pass
         else:
-            print("Password updated -> user_id:", response.json()["localId"])
+            pass
 
     def send_verification(idToken):
         body = {

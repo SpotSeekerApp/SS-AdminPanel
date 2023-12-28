@@ -3,6 +3,7 @@ from http import HTTPStatus
 from flask_login import login_user
 
 # custom modules
+from web_api_admin import OtherUsers
 from model.user import User
 from logger import logger
 
@@ -27,14 +28,35 @@ def register_page():
 
             return render_template("login.html")
     
-        except Exception as error:
-            flash(f"Error occured", error)
-            print(error)
+        except Exception as e:
+            msg = f"Error occurred {e}"
+            logger.exception(msg)
+            flash(msg)
             return render_template("signup.html")
 
     else:
         logger.info("placeowner register_page GET request")
         return render_template("signup.html")
+    
+
+def reset_password_page():
+    if request.method == "POST":
+        logger.info("placeowner reset_password_page POST request")
+
+        email = request.form["email"]
+        try:
+            OtherUsers.send_reset_password_mail(email)
+            flash("Please check your email address.")
+            return render_template("reset_password.html")
+        except Exception as e:
+            msg = f"Error occurred {e}"
+            logger.exception(msg)
+            flash(msg)
+            return render_template("reset_password.html")  
+        
+    else:
+        logger.info("placeowner reset_password_page GET request")
+        return render_template("reset_password.html")
 
 
 def login_placeowner_page():

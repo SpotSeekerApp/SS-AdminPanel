@@ -1,33 +1,46 @@
-{% extends "layout.html" %}
-{% block title %}Register{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block title %}Register{% endblock %} {% block
+content %}
 
 <div>
-  {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p class="text-danger text-center">{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    {% endwith %}
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <p class="text-danger text-center">{{ message }}</p>
+  {% endfor %} {% endif %} {% endwith %}
 </div>
-  <div class="row w-100 d-flex justify-content-center align-items-center h-100">
-    <div class="col-5">
-      <div class="register-wrapper fadeInDown">
-        <div id="formContent">
-          <!-- Tabs Titles -->
-            <h2 class="formTitle active"> Sign In </h2>
-            <a href="{{ url_for('register_page') }}"><h2 class="formTitle  underlineHover">Sign Up </h2></a>
+<div class="row w-100 d-flex justify-content-center align-items-center h-100">
+  <div class="col-5">
+    <div class="register-wrapper fadeInDown">
+      <div id="formContent">
+        <!-- Tabs Titles -->
+        <h2 class="formTitle active">Sign In</h2>
+        <a href="{{ url_for('register_page') }}"
+          ><h2 class="formTitle underlineHover">Sign Up</h2></a
+        >
 
-            <!-- Login Form -->
-            <form action="{{ url_for('login_placeowner_page') }}" method="POST">
-              <input type="email" id="login" class="fadeIn second" name="email" placeholder="email">
-              <input type="password" id="password" class="fadeIn third" name="pass" placeholder="password">
-              <input type="submit" class="fadeIn fourth" value="Log In">
-            </form>
-         </div>
+        <!-- Login Form -->
+        <form action="{{ url_for('login_placeowner_page') }}" method="POST">
+          <input
+            type="email"
+            id="login"
+            class="fadeIn second"
+            name="email"
+            placeholder="email"
+          />
+          <input
+            type="password"
+            id="password"
+            class="fadeIn third"
+            name="pass"
+            placeholder="password"
+          />
+          <input type="submit" class="fadeIn fourth" value="Log In" />
+        </form>
+
+        <a href="{{ url_for('reset_password_page') }}"
+          ><h2 class="formTitle underlineHover">Forgot Password?</h2></a
+        >
       </div>
     </div>
- </div>
- {% endblock %}
-                
+  </div>
+</div>
+{% endblock %}

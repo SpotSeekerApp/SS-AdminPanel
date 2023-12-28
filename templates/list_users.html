@@ -36,6 +36,7 @@
                                         <th>ID</th>
                                         <th>Username</th>
                                         <th>Email</th>
+                                        <th>Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -46,6 +47,7 @@
                                             <td>{{ user.user_id }}</td>
                                             <td>{{ user.user_name }}</td>
                                             <td>{{ user.email }}</td>
+                                            <td>{{ user.user_type }}</td>
                                             <td>
                                                 <a href="/update-users/{{user.user_id}}" class="btn btn-primary" role="button" data-toggle="modal" data-target="#modaledit{{user.user_id}}">Edit</a>
                                                 <a class="btn  btn-danger" role="button" 
@@ -118,7 +120,7 @@
                         <button class="btn btn-primary" type="submit">Add User</button>
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="placeowner" value="placeowner" name="userType" onclick="toggleCheckbox('placeowner')">
+                        <input type="checkbox" class="form-check-input" id="placeowner" value="place_owner" name="userType" onclick="toggleCheckbox('placeowner')">
                         <label class="form-check-label" for="placeowner">Placeowner</label>
                       </div>
                       
