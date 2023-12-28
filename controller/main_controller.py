@@ -47,7 +47,7 @@ def main_page():
                 return render_template("index.html")
             
         except Exception as e:
-            msg = f"Error occurred {e}"
+            msg = f"Error occurred. {e}"
             logger.exception(msg)
             flash(msg)
             return render_template("index.html")
