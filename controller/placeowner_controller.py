@@ -1,18 +1,15 @@
-from flask import render_template, request, session, flash, send_file, jsonify, url_for
-from werkzeug.utils import redirect
-import os
-import requests
+from flask import render_template, request, session, flash
 from http import HTTPStatus
 from flask_login import login_user
 
 # custom modules
-from config import API_URL
-from web_api_admin import Admin, OtherUsers
 from model.user import User
+from logger import logger
 
 def register_page():
-    print("placeowner register page rendered")
     if request.method == "POST":
+        logger.info("placeowner register_page POST request")
+
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["pass"]
@@ -36,11 +33,14 @@ def register_page():
             return render_template("signup.html")
 
     else:
+        logger.info("placeowner register_page GET request")
         return render_template("signup.html")
 
 
 def login_placeowner_page():
     if request.method == "POST":
+        logger.info("placeowner login_page POST request")
+
         email = request.form["email"]
         password = request.form["pass"]
         try:
@@ -48,9 +48,11 @@ def login_placeowner_page():
 
             status = response.json()['StatusCode']
             if status == HTTPStatus.OK:
-                pass
+                logger.info("Admin logged in successfully")
             else:
-                flash("Error! Failed to placeowner user. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+                msg = f"Error! Failed to login. Internal Server Error Status Code: {HTTPStatus.INTERNAL_SERVER_ERROR}"
+                logger.error(msg)
+                flash(msg)
                 return render_template("login.html")    
 
             session["user_type"] = "place_owner"
@@ -63,15 +65,14 @@ def login_placeowner_page():
             user = User(user_id=response_json["user_id"], username=response_json["user_name"], user_email=response_json["email"], user_type=response_json["user_type"])
             login_user(user, remember=True)
 
-
             return render_template("list_places.html")       
-        except Exception as error:
-            flash(f"Error occured {error}", error)
-            print(error)
+        except Exception as e:
+            msg = f"Error occurred {e}"
+            logger.exception(msg)
+            flash(msg)
             return render_template("login.html")
-    else:
-        return render_template("login.html")
-    
-
-
         
+    else:
+        logger.info("placeowner login_page GET request")
+
+        return render_template("login.html")

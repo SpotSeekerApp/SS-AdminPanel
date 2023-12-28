@@ -3,23 +3,28 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 # custom modules
 import config
 
-from controller import main_controller, placeowner_controller, admin_controller, user_controller, common_controller
+from controller import main_controller, placeowner_controller, admin_controller, common_controller
 from model.user import User
+from logger import logger
 
+# login manager
 login_manager = LoginManager()
 
 @login_manager.user_loader
 def load_user(user_id):
+    logger.info(f"Loading user user_id:{user_id}")
     user = User()
     user.get_user_from_db(user_id)
     return user
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    # do stuff
+    logger.info("Unauthorized endpoint.")
     return render_template("index.html")
 
 def create_app():
+    logger.info(f"Creating Flask app")
+    
     app = Flask(__name__)
     app.secret_key = config.SECRET_KEY
     # app.config['SESSION_TYPE'] = 'filesystem'

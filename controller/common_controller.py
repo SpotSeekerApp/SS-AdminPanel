@@ -9,9 +9,12 @@ from flask_login import login_required
 # custom modules
 from model.place import Place
 from config import API_URL
+from logger import logger
 
 @login_required
 def list_places_page():
+    logger.info(f"List places user_id:{session['uid']}")
+
     res_user_type = session["user_type"]
 
     if res_user_type == "place_owner":
@@ -20,10 +23,17 @@ def list_places_page():
     else:
         response = requests.get(f'{API_URL}/GetAllPlaces')
 
-    place_dict = response.json()['Data']
     status = response.json()['StatusCode']
-    print(place_dict.values())
+    if status == HTTPStatus.OK:
+        msg = f"Places listed successfully"
+        logger.info(msg)
+        flash(msg)
+    else:
+        msg = f"Error failed to list places {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
+    place_dict = response.json()['Data']
     return render_template("list_places.html", places=place_dict.values())
 
 @login_required
@@ -34,18 +44,20 @@ def update_places_page():
                         tags=[request.form['tags']],
                         link=request.form['link'],
                         user_id=session["uid"]).to_json()
-    print(place_data)
-    
-    response = requests.post(f'{API_URL}/UpdatePlace', json=place_data) #TODO: add url
+
+    logger.info(f"Update place user_id:{session['uid']}, place:{place_data}")
+
+    response = requests.post(f'{API_URL}/UpdatePlace', json=place_data)
     status = response.json()['StatusCode']
-    response = requests.get(f'{API_URL}/GetAllPlaces')
 
     if status == HTTPStatus.OK:
-        flash("Place edited successfully", "success")
-    elif status == HTTPStatus.NOT_ACCEPTABLE:
-        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+        msg = f"Place edited successfully"
+        logger.info(msg)
+        flash(msg)
     else:
-        flash({"error": "Failed to edit place"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+        msg = f"Error failed to edit place {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
     return redirect(url_for("list_places_page"))
 
@@ -56,16 +68,20 @@ def create_places_page():  #TODO: decide on columns
                         tags=[request.form['tags']],
                         link=request.form['link'],
                         user_id=session["uid"]).to_json()
-    print(place_data)
-    response = requests.post(f'{API_URL}/AddPlace', json=place_data) #TODO: add url
+    
+    logger.info(f"Update place user_id:{session['uid']}, place:{place_data}")
+
+    response = requests.post(f'{API_URL}/AddPlace', json=place_data)
     status = response.json()['StatusCode']
 
     if status == HTTPStatus.OK:
-        flash("Place added successfully", "success")
-    elif status == HTTPStatus.NOT_ACCEPTABLE:
-        pass
+        msg = f"Place added successfully"
+        logger.info(msg)
+        flash(msg)
     else:
-        flash("Error! Failed to add place. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+        msg = f"Error failed to add place {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
     return redirect(url_for("list_places_page"))
 
@@ -73,16 +89,19 @@ def create_places_page():  #TODO: decide on columns
 @login_required
 def delete_places_page(place_id):
     place_data = Place(place_id=place_id).to_json()
-    response = requests.post(f'{API_URL}/RemovePlace', json=place_data) #TODO: add url
-    print(response)
+
+    logger.info(f"Delete place user_id:{session['uid']}, place:{place_data}")
+
+    response = requests.post(f'{API_URL}/RemovePlace', json=place_data)
     status = response.json()['StatusCode']
-    response = requests.get(f'{API_URL}/GetAllPlaces')
 
     if status == HTTPStatus.OK:
-        flash("Place deleted successfully", "success")
-    elif status == HTTPStatus.NOT_ACCEPTABLE:
-        pass
+        msg = f"Place deleted successfully"
+        logger.info(msg)
+        flash(msg)
     else:
-        flash({"error": "Failed to remove place"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+        msg = f"Error failed to delete place {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
     return redirect(url_for("list_places_page"))

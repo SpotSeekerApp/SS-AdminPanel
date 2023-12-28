@@ -1,14 +1,10 @@
-from flask import render_template, request, session, flash, send_file, jsonify, url_for
-from werkzeug.utils import redirect
-import requests
+from flask import render_template, request, session, flash
 from http import HTTPStatus
-from urllib import error
-import json
-from flask_login import login_user, login_manager, login_required, logout_user
+from flask_login import login_user, login_required, logout_user
 
 # custom modules
+from logger import logger
 from model.user import User
-from config import API_URL
 import re 
 
 def check_password_strength(password):
@@ -17,6 +13,8 @@ def check_password_strength(password):
 
 def main_page():
     if request.method == "POST":
+        logger.info("main_page POST request")
+
         result = request.form
         email = result["email"]
         password = result["password"]
@@ -40,20 +38,29 @@ def main_page():
             login_user(user, remember=True)
 
             if status == HTTPStatus.OK:
-                print("Admin logged in successfully", "success")
+                logger.info("Admin logged in successfully")
                 return render_template("index.html")     
             else:
-                flash("Error! Failed to login. Internal Server Error Status Code:", HTTPStatus.INTERNAL_SERVER_ERROR)
+                msg = f"Error! Failed to login. Internal Server Error Status Code: {HTTPStatus.INTERNAL_SERVER_ERROR}"
+                logger.error(msg)
+                flash(msg)
                 return render_template("index.html")
             
         except Exception as e:
-            flash("Error occurred: ", e)
+            msg = f"Error occurred {e}"
+            logger.exception(msg)
+            flash(msg)
             return render_template("index.html")
+        
     else:
+        logger.info("main_page GET request")
+
         return render_template("index.html")
 
 @login_required
 def logout_page():
+    logger.info(f"User logout user_id:{session['uid']}")
+
     logout_user()
     if session is not None:
         session.clear()

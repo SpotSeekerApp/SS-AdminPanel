@@ -10,6 +10,7 @@ from model.user import User
 from model.place import Place
 from config import API_URL
 from web_api_admin import Admin
+from logger import logger
 
 @login_required
 def update_users_page(): #TODO: decide on columns
@@ -17,49 +18,62 @@ def update_users_page(): #TODO: decide on columns
                       username=request.form.get('user_name'),
                       user_email=request.form['email'],
                       user_password=None).to_json()
+    
+    logger.info(f"Update user user_id:{session['uid']}, user:{user_data}")
 
     response = requests.post(f'{API_URL}/UpdateUser', json=user_data) #TODO: add url
     status = response.json()['StatusCode']
     response = requests.get(f'{API_URL}/GetAllUsers')
 
     if status == HTTPStatus.OK:
-        flash("User edited successfully", "success")
-    elif status == HTTPStatus.NOT_ACCEPTABLE:
-        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+        msg = f"User edited successfully"
+        logger.info(msg)
+        flash(msg)
     else:
-        flash({"error": "Failed to edit user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+        msg = f"Error failed to edit user {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
     return redirect(url_for("list_users_page"))
 
 @login_required
 def list_users_page():
+    logger.info(f"List users user_id:{session['uid']}")
+
     response = requests.get(f'{API_URL}/GetAllUsers')
     user_dict = response.json()['Data']
     return render_template("list_users.html", users=user_dict.values())
 
 @login_required
 def create_users_page(): #TODO: decide on columns
+    logger.info(f"Add user user_id:{session['uid']}")
 
     try:
         user, response = User.add_user_to_db(request.form.get('email'), request.form.get('password'), request.form.get('user_name'), request.form.getlist('userType')[0])
         status = response.json()['StatusCode']
         if status == HTTPStatus.OK:
-            flash("User added successfully", HTTPStatus.OK)
-        elif status == HTTPStatus.NOT_ACCEPTABLE:
-            flash("Error! Same email. Status Code:", HTTPStatus.NOT_ACCEPTABLE)
+            msg = f"User added successfully"
+            logger.info(msg)
+            flash(msg)
         else:
-            flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
+            msg = f"Error failed to add user {HTTPStatus.INTERNAL_SERVER_ERROR}"
+            logger.error(msg)
+            flash(msg)
 
         return redirect(url_for("list_users_page"))
+    
     except:
-        flash("User couldnt registered:")
+        msg = f"User could not registered"
+        logger.info(msg)
+        flash(msg)
+    
         return redirect(url_for("list_users_page"))
 
 @login_required
 def delete_users_page(user_id):
-    print("user_id", user_id)
     user_data = User(user_id=user_id).to_json()
-    print("user_data", user_data)
+
+    logger.info(f"Delete user user_id:{session['uid']}, user:{user_data}")
 
     Admin.remove_user(user_id)
     response = requests.post(f'{API_URL}/RemoveUser', json=user_data) #TODO: add url
@@ -67,10 +81,12 @@ def delete_users_page(user_id):
     response = requests.get(f'{API_URL}/GetAllUsers')
 
     if status == HTTPStatus.OK:
-        flash("User deleted successfully", "success")
-    elif status == HTTPStatus.NOT_ACCEPTABLE:
-        flash({"error": "Same email"}, HTTPStatus.NOT_ACCEPTABLE)
+        msg = f"User deleted successfully"
+        logger.info(msg)
+        flash(msg)
     else:
-        flash({"error": "Failed to remove user"}, HTTPStatus.INTERNAL_SERVER_ERROR)
+        msg = f"Error failed to delete user {HTTPStatus.INTERNAL_SERVER_ERROR}"
+        logger.error(msg)
+        flash(msg)
 
     return redirect(url_for("list_users_page"))
