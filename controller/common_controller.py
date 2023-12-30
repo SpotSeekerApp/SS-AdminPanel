@@ -27,7 +27,6 @@ def list_places_page():
     if status == HTTPStatus.OK:
         msg = f"Places listed successfully"
         logger.info(msg)
-        flash(msg)
     else:
         msg = f"Error failed to list places {HTTPStatus.INTERNAL_SERVER_ERROR}"
         logger.error(msg)
@@ -91,7 +90,6 @@ def delete_places_page(place_id):
     place_data = Place(place_id=place_id).to_json()
 
     logger.info(f"Delete place user_id:{session['uid']}, place:{place_data}")
-
     response = requests.post(f'{API_URL}/RemovePlace', json=place_data)
     status = response.json()['StatusCode']
 

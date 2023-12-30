@@ -1,4 +1,4 @@
-from logtail import LogtailHandler
+from logtail.handler import LogtailHandler
 import logging
 import config
 

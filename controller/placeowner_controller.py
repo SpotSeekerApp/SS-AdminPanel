@@ -6,6 +6,19 @@ from flask_login import login_user
 from web_api_admin import OtherUsers
 from model.user import User
 from logger import logger
+import os, sys
+
+def err_handler(err):
+    print ("Exception has occured:", err)
+    print ("Exception type:", type(err))
+    err_type, err_obj, traceback = sys.exc_info()
+    if traceback != None:
+        line_num = traceback.tb_lineno
+        fname = os.path.split(traceback.tb_frame.f_code.co_filename)[1]
+        print(f"in {fname}")
+    else: line_num = "not found"
+    print ("\nERROR:", err, "on line number:", line_num)
+    print ("traceback:", traceback, "-- type:", err_type)
 
 def register_page():
     if request.method == "POST":
@@ -27,9 +40,9 @@ def register_page():
                 flash("Error! Failed to placeowner user. Internal Server Error Status Code:",HTTPStatus.INTERNAL_SERVER_ERROR)
 
             return render_template("login.html")
-    
-        except Exception as e:
-            msg = f"Error occurred {e}"
+        except Exception as err:
+            msg = f"Error occurred {err}"
+            print(response)
             logger.exception(msg)
             flash(msg)
             return render_template("signup.html")

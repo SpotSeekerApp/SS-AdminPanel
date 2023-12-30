@@ -3,6 +3,8 @@ from config import API_URL
 import requests
 from web_api_admin import Admin, OtherUsers
 
+from logger import logger
+
 class User(UserMixin):
     def __init__(self, user_id=None, username=None, user_email=None, user_password=None, user_type=None) -> None:
         self.id = user_id
@@ -18,7 +20,10 @@ class User(UserMixin):
     @classmethod
     def add_user_to_db(cls, email, password, username, user_type):
         try:
-            user = Admin.add_user(email, password)
+            flag, user = Admin.add_user(email, password)
+            if flag == -1:
+                raise "Error adding user"
+            
             user_json = OtherUsers.sign_in(email, password)
             OtherUsers.send_verification(user_json["idToken"])
 
@@ -59,5 +64,10 @@ class User(UserMixin):
             raise Exception("Reset password error!")
         
     def get_user_from_db(self, user_id):
-        response = requests.get(f"{API_URL}GetUserInfo?user_id={user_id}").json()["Data"]
-        return User(user_id=user_id, username=response["user_name"], user_email=response["email"], user_type=response["user_type"])
+        try:
+            response = requests.get(f"{API_URL}GetUserInfo?user_id={user_id}")
+            response = response.json()
+            response_data = response["Data"]
+            return User(user_id=user_id, username=response_data["user_name"], user_email=response_data["email"], user_type=response_data["user_type"])
+        except Exception as e:
+            logger.error(e)

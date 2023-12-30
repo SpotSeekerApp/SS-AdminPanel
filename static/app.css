@@ -39,19 +39,10 @@
 .nav-sub-text {
     font-size: 1em !important;
 }
-
-
-.table-dark{
-    background-color: #031627 !important;
-}
-
-.table-col{
-    color: darkblue;
-}
-
+/* 
 table {
 max-height: 350px;
-}
+} */
 
 .card{
     background-color: white !important;
@@ -92,10 +83,17 @@ max-height: 350px;
 
 .my-custom-scrollbar {
     position: relative;
-    height: 500px;
+    max-height: 75vh;
     overflow: auto;
-}
+    }
 
 .table-wrapper-scroll-y {
-    display: block;
+display: block !important;
 }
+
+
+.ss-table  {
+    border-collapse: collapse;
+    background-color: white !important;
+}
+

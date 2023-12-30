@@ -17,10 +17,11 @@ class Admin:
             user = auth.create_user(email=email, password=password, app=firebase)
             print('Sucessfully created new user: {0}'.format(user.uid))
         except Exception as e:
-            print('Cannot create new user: {0}'.format(e))
-            return None
+            msg = 'Cannot create new user: {0}'.format(e)
+            print(msg)
+            return -1, msg
 
-        return user
+        return 0, user
 
     def update_user(user_id, email, password):
         try:
