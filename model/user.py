@@ -1,9 +1,9 @@
 from flask_login import UserMixin
 from config import API_URL
 import requests
-from web_api_admin import Admin, OtherUsers
+from services.user_auth import Admin, OtherUsers
 
-from logger import logger
+from services.logger import logger
 
 class User(UserMixin):
     def __init__(self, user_id=None, username=None, user_email=None, user_password=None, user_type=None) -> None:

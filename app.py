@@ -5,7 +5,7 @@ import config
 
 from controller import main_controller, placeowner_controller, admin_controller, common_controller
 from model.user import User
-from logger import logger
+from services.logger import logger
 
 # login manager
 login_manager = LoginManager()
@@ -56,5 +56,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host=config.localhost_ip,port=config.WEB_PORT, debug=True)    
+    app.run(host=config.LOCALHOST_IP, port=config.PORT, debug=True)    
 

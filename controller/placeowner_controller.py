@@ -3,9 +3,9 @@ from http import HTTPStatus
 from flask_login import login_user
 
 # custom modules
-from web_api_admin import OtherUsers
+from services.user_auth import OtherUsers
 from model.user import User
-from logger import logger
+from services.logger import logger
 import os, sys
 
 def err_handler(err):

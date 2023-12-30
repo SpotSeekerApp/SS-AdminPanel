@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask_login import login_user, login_required, logout_user
 
 # custom modules
-from logger import logger
+from services.logger import logger
 from model.user import User
 import re 
 

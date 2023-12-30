@@ -9,8 +9,8 @@ from flask_login import login_required
 from model.user import User
 from model.place import Place
 from config import API_URL
-from web_api_admin import Admin
-from logger import logger
+from services.user_auth import Admin
+from services.logger import logger
 
 @login_required
 def update_users_page(): #TODO: decide on columns

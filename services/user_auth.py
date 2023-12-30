@@ -5,10 +5,11 @@ import pyrebase
 from firebase_admin import auth
 from firebase_admin import initialize_app
 from firebase_admin import credentials
+import config
 
 WEBAPIKEY="AIzaSyAfYvTIs8C1DfruUHgYR0AxhiKtwULVrFw"
 
-cred = credentials.Certificate("./credential-token.json")
+cred = credentials.Certificate(json.loads(config.FIREBASE_CRED))
 firebase = initialize_app(credential=cred)
 
 class Admin:

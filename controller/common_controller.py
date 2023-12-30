@@ -9,7 +9,7 @@ from flask_login import login_required
 # custom modules
 from model.place import Place
 from config import API_URL
-from logger import logger
+from services.logger import logger
 
 @login_required
 def list_places_page():
