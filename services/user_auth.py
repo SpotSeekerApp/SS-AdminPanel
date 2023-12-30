@@ -9,8 +9,26 @@ import config
 
 WEBAPIKEY="AIzaSyAfYvTIs8C1DfruUHgYR0AxhiKtwULVrFw"
 
-cred = credentials.Certificate(json.loads(config.FIREBASE_CRED))
+def load_cred_from_config():
+    cred_dict = {
+        "type": config.TYPE,
+        "project_id": config.PROJECT_ID,
+        "private_key_id": config.PRIVATE_KEY_ID,
+        "private_key": config.PRIVATE_KEY.replace('\\n', '\n'),
+        "client_email": config.CLIENT_EMAIL,
+        "client_id": config.CLIENT_ID,
+        "auth_uri": config.AUTH_URI,
+        "token_uri": config.TOKEN_URI,
+        "auth_provider_x509_cert_url": config.AUTH_PROVIDER_X509_CERT_URL,
+        "client_x509_cert_url": config.CLIENT_X509_CERT_URL,
+        "universe_domain": config.UNIVERSE_DOMAIN
+    }
+
+    return cred_dict
+
+cred = credentials.Certificate(load_cred_from_config())
 firebase = initialize_app(credential=cred)
+
 
 class Admin:
     def add_user(email, password):
