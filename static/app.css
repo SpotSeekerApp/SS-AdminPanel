@@ -131,28 +131,43 @@ display: block !important;
     background-color: white !important;
 }
 
-/* ChoicesJs style */
-
-/* Set background and text color */
-.choices {
-    background-color: #fff; /* White background */
-    color: #000; /* Black text */
+.spotseekerLogo{
+    width: 90px;
+    height: 90px;
 }
 
-/* Styling for the selected items */
-.choices__list--multiple .choices__item {
-    background-color: #000; /* Black background for selected items */
-    color: #fff; /* White text for selected items */
-}
-
-/* Styling for the dropdown arrow */
-.choices:after {
-    border-color: #000; /* Black arrow color */
-}
-
-/* Styling for dropdown list */
-.choices[data-type*="select-one"] .choices__list--single {
-    background-color: #fff; /* White background for single select dropdown */
-    color: #000; /* Black text for single select dropdown */
-    border: 1px solid #000; /* Black border for single select dropdown */
-}
+/* Style for selected options */
+/* Style for selected options */
+.selected-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .selected-option {
+    background-color: #f0f0f0;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+  }
+  
+  .selected-option:hover {
+    cursor: pointer;
+    background-color: #e0e0e0;
+  }
+  
+  .selected-option .remove-option {
+    margin-left: 5px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+  }
+  
+  .selected-option .remove-option:hover {
+    color: #333;
+  }
+  
+  

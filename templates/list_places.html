@@ -1,9 +1,17 @@
 {% extends "layout.html" %}
 {% block title %}Places{% endblock %}
 {% block content %}
-<!-- Import choiceJS -->
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
 
+    {% for message in messages %}
+    <p class="text-danger text-center">{{message}}</p>
+    {% endfor %}
+
+    {% endif %}
+    {% endwith %}
+</div>
 <div class="container-fluid px-5">
 {% if session['user_type'] == "place_owner" %}
 <h1 class="float-left">My Places</h1>
@@ -64,7 +72,7 @@
 
 
   <!--Edit place modal-->
-  <div id="modaledit{{place.place_id}}" class="modal fade" role="dialog">
+  <div id="modaledit{{place.place_id}}" class="modal modaledit fade" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -77,8 +85,6 @@
               <label>Id:</label>
               <input type = "text" class="form-control" name="place_id" value="{{ place.place_id }}" readonly>
             </div>
-  
-  
             <div class="form-group">
               <label>Name:</label>
               <input type="hidden" name="id" value="id" />
@@ -88,7 +94,7 @@
                 name="name"
                 value="{{ place.place_name }}"
               />
-            </div>
+              </div>
             <div class="form-group">
               <label>Main Category:</label>
               <input
@@ -97,10 +103,17 @@
                 name="main_category"
                 value="{{ place.main_category }}"
               />
-            </div>
-            <div class="form-group tags">
-                <label class="my-1 mr-2" for="tagSelect">Tags:</label>
-                <select class="w-100 tagSelect" name="tagSelect[]" multiple="multiple">
+            </div>  
+            <div class="form-group"> 
+                <label>Tags:</label>
+                <div class="selected-options"></div>
+                <input
+                  type="hidden"
+                  class="form-control selected-options-list"
+                  name="tags"
+                  value="{{ place.tags }}"
+                />
+                <select class="w-100 tagSelect" name="tagSelect[]" multiple>
                   {% for tag in tags %}
                     <option value="{{ tag }}" >{{ tag }}</option>
                   {% endfor %}
@@ -169,16 +182,23 @@
               required="1"
             />
           </div>
-          <div class="form-group">
-            <!-- TODO 0 1 arasında sayı al her bir tag için -->
+          <div class="form-group"> 
             <label>Tags:</label>
+
             <input
-              type="text"
-              class="form-control"
+              type="hidden"
+              class="form-control selected-options-list"
               name="tags"
-              required="1"
+              value=""
             />
-          </div>
+
+            <div class="selected-options"></div>
+            <select class="w-100 tagSelect" name="tagSelect[]" multiple>
+              {% for tag in tags %}
+                <option value="{{ tag }}" >{{ tag }}</option>
+              {% endfor %}
+            </select>
+         </div>
           <div class="form-group">
             <label>Link:</label>
             <input
