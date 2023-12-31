@@ -36,14 +36,14 @@
               <ul class="list-unstyled">
                 <div class="row d-flex justify-content-center">
                 {% if 'uid' in session %}
-                  <p class="" style="">{{session['email']}}</p> 
+                  <p>{{session['email']}}</p> 
                   <a class="btn btn-outline-danger mx-3" role="button" aria-pressed="true"
                     href="{{ url_for('logout_page') }}">Logout</a>
                 {% else %}
-                  <a class="btn btn-outline-light mx-3" role="button" aria-pressed="true"
+                  <!-- <a class="btn btn-outline-light mx-3" role="button" aria-pressed="true"
                     href="{{ url_for('login_placeowner_page') }}">Login</a>
                   <a class="btn btn-outline-dark" role="button" aria-pressed="true"
-                    href="{{ url_for('register_page') }}">Sign Up</a>
+                    href="{{ url_for('register_page') }}">Sign Up</a> -->
                 {% endif %}
               </div>
                 </li>

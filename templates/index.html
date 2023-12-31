@@ -3,8 +3,9 @@
 {% block content %}
 
 <!-- Welcome Text -->
-<h2 class="translate-middle text-center">Welcome to SpotSeeker Panel</h2>
+<h2 class="translate-middle text-center" style="margin-top: 7%; margin-bottom: 50px;">Welcome to SpotSeeker Panel</h2>
 {% if 'uid' in session %}
+<h4 class="translate-middle text-center" style="margin-bottom: 10px;">Hello, <span style="color: rgb(226, 43, 113);">{{ session['email'] }}</span>. <p style="margin-top: 10px;">What do you want to do?</p></h4>
 <div class="my-3 d-flex justify-content-center">
     <a class="btn btn-light mx-3" role="button" aria-pressed="true" href="{{ url_for('list_places_page') }}">List Places</a>
     {% if session['user_type'] == "admin" %}
@@ -13,7 +14,7 @@
 </div>
 
 {% else %}
-<div class="container d-flex align-items-top justify-content-center position-relative">
+<div class="container d-flex align-items-top justify-content-center position-relative" style="margin-top: 5%;">
 <!-- Left Column - Login Form -->
 <aside class="col-sm-6">
     <div class="card">
