@@ -32,3 +32,19 @@ function togglePasswordVisibility() {
         passwordInput.type = "password";
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.tagSelect');
+
+    buttons.forEach(button => {
+        // Initialize Choices.js on each button
+        const tagSelect = new Choices(button, {
+            removeItemButton: true,
+            placeholder: true,
+            placeholderValue: '+ Add Tags',
+            maxItemCount: 20,
+            searchResultLimit: 20,
+            itemSelectText: 'Press to select',
+        });
+    });
+});

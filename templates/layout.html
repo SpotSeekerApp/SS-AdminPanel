@@ -4,12 +4,13 @@
 <head>
   <meta charset="utf-8" />
   <title>SpotSeeker|{% block title %}{% endblock %}</title>
-  <!-- Title of the web page changes dynamically -->
   <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='user.css') }}" />
   <!-- Import the Bootstrap stylesheet -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZwT" crossorigin="anonymous">
+
+  <!-- Choices.js styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 </head>
 
 <body>
@@ -23,21 +24,21 @@
                 
               <ul class="navbar-nav nav d-flex flex-column list-unstyled text-dark">
 
-                <li class="nav-item"><a href="{{ url_for('main_page') }}" class="nav-link">Home</a></li>
+                <li class="nav-item custom-nav-item"><a href="{{ url_for('main_page') }}" class="nav-link">Home</a></li>
                 {% if session['user_type'] == "place_owner" %}
-                <li class="nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">My Places</a></li>
+                <li class="nav-item custom-nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">My Places</a></li>
                 {% elif session['user_type'] == "admin" %}
-                <li class="nav-item"><a href="{{ url_for('list_users_page') }}" class="nav-link">Users</a></li>
-                <li class="nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">Spots</a></li>
+                <li class="nav-item custom-nav-item"><a href="{{ url_for('list_users_page') }}" class="nav-link">Users</a></li>
+                <li class="nav-item custom-nav-item"><a href="{{ url_for('list_places_page') }}" class="nav-link">Spots</a></li>
                 {% else %}
                 {% endif %}
               </ul>
               </div>
             <div>
               <ul class="list-unstyled">
-                <div class="row d-flex justify-content-end">
+                <div class="row d-flex justify-content-center">
                 {% if 'uid' in session %}
-                  {{session['email']}}
+                  <p class="" style="">{{session['email']}}</p> 
                   <a class="btn btn-outline-danger mx-3" role="button" aria-pressed="true"
                     href="{{ url_for('logout_page') }}">Logout</a>
                 {% else %}
@@ -72,19 +73,21 @@
 </footer>
 </div>
   {% block script %}
-
-  <!-- Import Jquery -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <!-- Import JQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ 
   <!-- Import bootstrap -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js" integrity="sha512-fHY2UiQlipUq0dEabSM4s+phmn+bcxSYzXP4vAXItBvBHU7zAM/mkhCZjtBEIJexhOMzZbgFlPLuErlJF2b+0g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
   <!-- Import our custom JavaScript -->
   <script src="{{ url_for('static', filename='app.js') }}"></script>
-  <!--Import CharJS-->
+
+  <!--Import ChartJS-->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+  <!--Import PopperJs-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
   {% endblock %}
 </body>

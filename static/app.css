@@ -9,27 +9,61 @@
 .content-container{
     background:
 	linear-gradient(
-		limegreen,
+		rgba(50, 205, 50, 0.689),
 		transparent
 	),
 	linear-gradient(
 		90deg,
-		skyblue,
+		rgba(135, 207, 235, 0.72),
 		transparent
 	),
 	linear-gradient(
 		-90deg,
-		coral,
+		rgb(255, 127, 80),
 		transparent
 	);
     background-blend-mode: screen;
     border-radius: 1em;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
+}
+
+.custom-nav-item {
+    background:
+	linear-gradient(
+		210deg,
+		rgba(205, 255, 212, 0.401),
+		rgba(97, 152, 196, 0.268)
+	);
+    background-blend-mode: screen;
+    border-radius: 1em;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
 }
 
 
+.custom-nav-item:hover {
+    transform: scale(1.02); /* Slightly scale up the item */
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.2); /* Increase the shadow for a lifting effect */
+    background:
+	linear-gradient(
+		210deg,
+		rgb(228, 143, 82),
+		rgb(216, 225, 227)
+	);
+}
+
 .navbar{
+    background:
+	linear-gradient(
+		180deg,
+		rgba(135, 207, 235, 0.341),
+		transparent
+	);
+    background-blend-mode: screen;
     border-radius: 1em;
-    background-color: skyblue !important;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
 }
 
 .navbar-brand {
@@ -97,3 +131,28 @@ display: block !important;
     background-color: white !important;
 }
 
+/* ChoicesJs style */
+
+/* Set background and text color */
+.choices {
+    background-color: #fff; /* White background */
+    color: #000; /* Black text */
+}
+
+/* Styling for the selected items */
+.choices__list--multiple .choices__item {
+    background-color: #000; /* Black background for selected items */
+    color: #fff; /* White text for selected items */
+}
+
+/* Styling for the dropdown arrow */
+.choices:after {
+    border-color: #000; /* Black arrow color */
+}
+
+/* Styling for dropdown list */
+.choices[data-type*="select-one"] .choices__list--single {
+    background-color: #fff; /* White background for single select dropdown */
+    color: #000; /* Black text for single select dropdown */
+    border: 1px solid #000; /* Black border for single select dropdown */
+}
