@@ -42,7 +42,6 @@ def register_page():
             return render_template("login.html")
         except Exception as err:
             msg = f"Error occurred {err}"
-            print(response)
             logger.exception(msg)
             flash(msg)
             return render_template("signup.html")
