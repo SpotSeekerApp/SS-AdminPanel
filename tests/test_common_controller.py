@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from http import HTTPStatus
 from flask import url_for
+from controller.common_controller import is_meaningful_string
 
 @pytest.fixture
 def place_data():
@@ -61,7 +62,7 @@ def test_update_places_page_success(client, auth):
     # Check if redirect happened to list_places_page
     assert response.status_code == HTTPStatus.FOUND
 
-def test_create_places_page_s(client, auth):
+def test_create_places_page_success(client, auth):
     # Log in as a user (assuming place_owner_login is correct for this case)
     auth.place_owner_login()
 
@@ -80,14 +81,26 @@ def test_create_places_page_s(client, auth):
     assert response.status_code == HTTPStatus.FOUND
 
 
-def test_delete_places_page_s(client, auth):
-    # Log in as a user (assuming place_owner_login is correct for this case)
+def test_delete_places_page_success(client, auth):
     auth.place_owner_login()
 
     user_id = "1"
 
-    # Make a POST request to the create_places_page endpoint
     response = client.post(f'/delete-places/{user_id}')
 
-    # Check if redirect happened to list_places_page
     assert response.status_code == HTTPStatus.FOUND
+
+def test_list_places_page_for_placeowner(client, auth):
+    auth.place_owner_login()
+    response = client.get(f'/list-places')
+    assert response.status_code == 200
+
+def test_list_places_page_for_admin(client, auth):
+    auth.admin_login()
+    response = client.get(f'/list-places')
+    assert response.status_code == 200
+    
+def test_is_meaningful_string():
+    assert is_meaningful_string("a") == True
+    assert is_meaningful_string("_") == False
+

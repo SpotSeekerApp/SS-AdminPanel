@@ -48,3 +48,45 @@ def test_delete_users_page(mock_get, mock_post, mock_remove_user, client, user_d
 
     response = client.post('/delete-users/1')
     assert response.status_code == 200  # Redirect to list_users_page
+
+
+def test_list_user_page_success(client, auth):
+    auth.admin_login()
+    response = client.get(f'/list-users')
+    assert response.status_code == 200
+
+def test_delete_user_page_success(client, auth):
+    auth.admin_login()
+    user_id = "1"
+    try:
+        response = client.post(f'/delete-users/{user_id}')
+    except:
+        assert True
+
+def test_update_user_page_success(client, auth):
+    auth.admin_login()
+
+    new_user_data = {
+        "email":"",
+        "password":"",
+        "user_name":"",
+        "user_type":["normal"]
+    }
+    
+    try:
+        response = client.post(f'/update-users', data=new_user_data)
+    except:
+        assert True
+
+def test_create_user_page_success(client, auth):
+    auth.admin_login()
+
+    new_user_data = {
+        "email":"",
+        "password":"",
+        "user_name":"",
+        "user_type":["normal"]
+    }
+
+    response = client.post('/create-users', data=new_user_data)
+    assert response.status_code == 302

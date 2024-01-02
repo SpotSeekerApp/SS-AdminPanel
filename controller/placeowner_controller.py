@@ -8,17 +8,6 @@ from model.user import User
 from services.logger import logger
 import os, sys
 
-def err_handler(err):
-    print ("Exception has occured:", err)
-    print ("Exception type:", type(err))
-    err_type, err_obj, traceback = sys.exc_info()
-    if traceback != None:
-        line_num = traceback.tb_lineno
-        fname = os.path.split(traceback.tb_frame.f_code.co_filename)[1]
-        print(f"in {fname}")
-    else: line_num = "not found"
-    print ("\nERROR:", err, "on line number:", line_num)
-    print ("traceback:", traceback, "-- type:", err_type)
 
 def register_page():
     if request.method == "POST":

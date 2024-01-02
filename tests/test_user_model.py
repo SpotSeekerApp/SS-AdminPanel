@@ -74,7 +74,7 @@ def test_get_user_from_db_success():
     User.get_user_from_db(config.ADMIN_USERID)
     assert True
 
-def test_get_user_from_db_success():
+def test_get_user_from_db_fail():
     try:
         User.get_user_from_db("1")
     except Exception:
