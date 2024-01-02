@@ -41,6 +41,15 @@ def test_placeowner_login(client, auth):
         print(session)
         assert session["user_type"] == "place_owner"
 
+
+def test_placeowner_register(client, auth):
+    assert client.get('/register').status_code == 200
+    auth.place_owner_login()
+    with client:
+        client.get('/')
+        print(session)
+        assert session["user_type"] == "place_owner"
+
 def test_admin_logout(client, auth):
     auth.admin_login()  # Assuming this sets the session correctly
     with client:

@@ -34,6 +34,12 @@ class AuthActions(object):
             '/login-placeowner',
             data={'email': email, 'pass': password}
         )
+    
+    def place_owner_register(self, email=config.PO_EMAIL, password=config.PO_PASSWORD):
+        return self._client.post(
+            '/register',
+            data={'name': "test_po", 'email': email, 'pass': password}
+        )
 
     def logout(self):
         return self._client.get('/logout')
