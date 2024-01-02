@@ -80,3 +80,9 @@ def test_main_page_post_invalid(mock_sign_in, client, captured_templates):
     template, context = captured_templates[0]
     assert template.name == "index.html"
 
+
+def test_reset_password_page_get(client, captured_templates):
+    response = client.get('/reset-password')
+    assert len(captured_templates) == 1
+    template, context = captured_templates[0]
+    assert template.name == "reset_password.html"

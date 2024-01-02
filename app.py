@@ -13,8 +13,7 @@ login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     logger.info(f"Loading user user_id:{user_id}")
-    user = User()
-    user.get_user_from_db(user_id)
+    user = User.get_user_from_db(user_id)
     return user
 
 @login_manager.unauthorized_handler

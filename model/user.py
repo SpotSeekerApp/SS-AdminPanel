@@ -22,7 +22,7 @@ class User(UserMixin):
         try:
             flag, user = Admin.add_user(email, password)
             if flag == -1:
-                raise "Error adding user"
+                raise Exception("Error adding user")
             
             user_json = OtherUsers.sign_in(email, password)
             OtherUsers.send_verification(user_json["idToken"])
@@ -32,7 +32,7 @@ class User(UserMixin):
             status = response.json()['StatusCode']
             return user, response
         except:
-            raise "Error adding user"
+            raise Exception("Error adding user")
     
     @classmethod
     def sign_in_to_app(cls, email, password, user_type):
@@ -42,7 +42,7 @@ class User(UserMixin):
             response = requests.get(f'{API_URL}/GetUserInfo?user_id={user["localId"]}')
             res_user_type = response.json()["Data"]["user_type"]
             if res_user_type != user_type:
-                raise "Not a place owner!"
+                raise "Not the same user type!"
             
             user_json = OtherUsers.sign_in(email, password)
             is_verified = OtherUsers.is_verified(user_json["idToken"])
@@ -52,17 +52,8 @@ class User(UserMixin):
             return user,response
         except:
             raise Exception("Sign in error!")
-        
     
     @classmethod
-    def reset_password(cls, email, password, user_type):
-        try:
-            user = OtherUsers.sign_in(email, password)
-            
-
-        except:
-            raise Exception("Reset password error!")
-        
     def get_user_from_db(self, user_id):
         try:
             response = requests.get(f"{API_URL}GetUserInfo?user_id={user_id}")
