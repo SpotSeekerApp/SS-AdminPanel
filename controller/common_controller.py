@@ -11,14 +11,6 @@ from model.place import Place
 from config import API_URL
 from services.logger import logger
 
-dummy_tags = ["cozy", "family-friendly", "comfortable",
-        "cozy1", "family-friendly1", "comfortable1",
-        "cozy2", "family-friendly2", "comfortable2",
-        "cozy3", "family-friendly3", "comfortable3",
-        "cozy4", "family-friendly4", "comfortable4",
-        "cozy5", "family-friendly5", "comfortable5",
-        "cozy6", "family-friendly6", "comfortable6",
-        "cozy7", "family-friendly7", "comfortable7"]
 
 def is_meaningful_string(text):
     # Check for only whitespace or emptiness
@@ -65,8 +57,8 @@ def list_places_page():
             tags = ','.join(tag[1] for tag in place_tags if len(tag)==2 and tag[1] == 1 and is_meaningful_string(tag))
             place_dict[place_id]["tags"] = ','.join(tags)
 
-
-    return render_template("list_places.html", places=place_dict.values(), tags=dummy_tags)
+    tags = requests.get(f'{API_URL}/GetAllTags').json()["Data"]["all_tags"]
+    return render_template("list_places.html", places=place_dict.values(), tags=tags)
 
 @login_required
 def update_places_page():
@@ -97,19 +89,21 @@ def update_places_page():
     return redirect(url_for("list_places_page"))
 
 @login_required
-def create_places_page():  #TODO: decide on columns
-    place_data = Place( place_name=request.form['name'],
+def create_places_page():
+    place = Place( place_name=request.form['name'],
                         main_category=request.form['main_category'],
-                        tags=request.form['tags'],
+                        tags=None,
                         link=request.form['link'],
-                        user_id=session["uid"]).to_json()
+                        user_id=session["uid"])
     
     # only send tags with value 1 to db
-    place_data["tags"] = [(tag, 1) for tag in place_data["tags"].split(",")]
+    if request.form['tags'] is not []:
+        place.tags = {tag: 1.0 for tag in request.form['tags'].split(",")}
+        
+    place_data = place.to_json()
 
-    logger.info(f"Update place user_id:{session['uid']}, place:{place_data}")
+    logger.info(f"Create place user_id:{session['uid']}, place:{place_data}")
 
-    print(place_data)
     response = requests.post(f'{API_URL}/AddPlace', json=place_data)
     status = response.json()['StatusCode']
 
