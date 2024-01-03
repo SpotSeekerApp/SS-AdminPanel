@@ -1,4 +1,4 @@
-from flask import render_template, request, session, flash
+from flask import render_template, request, session, flash, url_for, redirect
 from http import HTTPStatus
 from flask_login import login_user
 
@@ -88,7 +88,7 @@ def login_placeowner_page():
             user = User(user_id=response_json["user_id"], username=response_json["user_name"], user_email=response_json["email"], user_type=response_json["user_type"])
             login_user(user, remember=True)
 
-            return render_template("list_places.html")       
+            return redirect(url_for("list_places_page"))
         except Exception as e:
             msg = f"Error occurred {e}"
             logger.exception(msg)

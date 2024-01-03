@@ -62,18 +62,21 @@ def list_places_page():
 
 @login_required
 def update_places_page():
-    place_data = Place( place_id=request.form['place_id'],
-                        place_name=request.form['name'],
-                        main_category=request.form['main_category'],
-                        tags=request.form['tags'],
-                        link=request.form['link'],
-                        user_id=session["uid"]).to_json()
+    place = Place(  place_id=request.form["place_id"],
+                    place_name=request.form['name'],
+                    main_category=request.form['main_category'],
+                    tags=None,
+                    link=request.form['link'],
+                    user_id=session["uid"])
 
     # only send tags with value 1 to db
-    place_data["tags"] = [(tag, 1) for tag in place_data["tags"].split(",")]
-    
-    logger.info(f"Update place user_id:{session['uid']}, place:{place_data}")
+    if request.form['tags'] != '':
+        place.tags = {tag: 1.0 for tag in request.form['tags'].split(",")}
 
+    place_data = place.to_json()
+    print(place_data)
+    logger.info(f"Update place user_id:{session['uid']}, place:{place_data}")
+    
     response = requests.post(f'{API_URL}/UpdatePlace', json=place_data)
     status = response.json()['StatusCode']
 
@@ -91,10 +94,10 @@ def update_places_page():
 @login_required
 def create_places_page():
     place = Place( place_name=request.form['name'],
-                        main_category=request.form['main_category'],
-                        tags=None,
-                        link=request.form['link'],
-                        user_id=session["uid"])
+                    main_category=request.form['main_category'],
+                    tags=None,
+                    link=request.form['link'],
+                    user_id=session["uid"])
     
     # only send tags with value 1 to db
     if request.form['tags'] is not []:

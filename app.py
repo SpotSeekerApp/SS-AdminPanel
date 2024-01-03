@@ -50,13 +50,22 @@ def create_app():
 
     app.add_url_rule("/loaderio-5147ce8f4b522cd23d7896e4f3aad03e.html", view_func=show_loader_file, methods=["GET"])
 
+
     return app
 
 
 def show_loader_file():
     return "loaderio-5147ce8f4b522cd23d7896e4f3aad03e"
 
+
 app = create_app()
+
+
+@app.errorhandler(404)
+def page_not_found(e): 
+  return render_template("404.html")
+
+
 
 if __name__ == "__main__":
     app.run(host=config.LOCALHOST_IP, port=config.PORT, debug=True)    
