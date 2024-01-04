@@ -39,14 +39,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialization step to display tags received from Flask as initially selected options
     const initialTags = document.querySelector('.modaledit .selected-options-list');
-
     if (initialTags.value != 0) {
       let initialTagsList = initialTags.value.split(',')
 
       const selectedOptionsContainer = initialTags.parentNode.querySelector('.selected-options');
 
       initialTagsList.forEach(tag => {
-        const optionElement = document.createElement('div');
+        const optionElement = tag.parentElement.createElement('div');
         optionElement.classList.add('selected-option');
         optionElement.dataset.value = tag;
         optionElement.innerHTML = `
@@ -55,35 +54,13 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         selectedOptionsContainer.appendChild(optionElement);
-
-        optionElement.querySelector('.remove-option').addEventListener('click', function() {
-          const formElement = optionElement.parentNode.parentNode
-
-          optionElement.remove();
-
-          console.log("formElement", formElement)
-          formElement.querySelectorAll('.selected-options-list').value =  Array.from(formElement.querySelectorAll('.selected-option'))
-              .map(option => option.dataset.value).join(',');
-          
-
-          // console.log(hiddenInput,"final value of tags")
-
-          //  hiddenInput_final = formElement.querySelectorAll('.selected-options-list');
-          // hiddenInput_final = hiddenInput
-
-          console.log(formElement, "formElement")
-              
-        });
       });
     }
-
-    // selectedOptionsContainer.appendChild(optionElement);
-
 
     // main code to handle dropdown select
     const selectors = document.querySelectorAll('.tagSelect');
     selectors.forEach(select => {
-      
+        
       select.addEventListener('change', function(e) {
 
         // select container(div) to add selected tags as buttons
@@ -140,7 +117,5 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
     });
-
-      
 });
   
